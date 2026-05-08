@@ -1,0 +1,2 @@
+# Dosya-gizleme-
+İndex.html
