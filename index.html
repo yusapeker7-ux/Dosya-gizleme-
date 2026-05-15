@@ -3,1157 +3,345 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Siber Kasa Ultimate</title>
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<title>Siber Kasa Vercel Vault</title>
 
 <style>
+body{margin:0;font-family:Arial;display:flex;background:#eef2ff}
 
-:root{
-    --primary:#2563eb;
-    --success:#10b981;
-    --bg:#f4f8ff;
-}
+.sidebar{width:220px;background:white;height:100vh;padding:15px}
+.main{flex:1;padding:20px}
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial;
-}
+.page{display:none}
+.page.active{display:block}
 
-body{
-    background:var(--bg);
-    display:flex;
-    min-height:100vh;
-}
+input,textarea,select{
+width:100%;padding:10px;margin-top:8px;border-radius:10px;border:1px solid #ccc}
 
-/* DARK MODE */
+button{
+width:100%;padding:10px;margin-top:10px;
+background:#2563eb;color:white;border:none;border-radius:10px;cursor:pointer}
 
-.dark-mode{
-    background:#0f172a;
-    color:white;
-}
+.card{background:white;padding:15px;border-radius:15px;margin-top:10px}
 
-.dark-mode .sidebar,
-.dark-mode .card,
-.dark-mode .item-box{
-    background:#1e293b;
-    color:white;
-}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 
-/* LOGIN */
+.item{background:white;padding:10px;border-radius:10px;text-align:center}
 
-#auth-overlay{
-    position:fixed;
-    inset:0;
-    background:linear-gradient(135deg,#dbeafe,#eff6ff);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
+.modal{
+position:fixed;inset:0;background:rgba(0,0,0,.6);
+display:none;justify-content:center;align-items:center}
 
-.auth-box{
-    width:400px;
-    background:white;
-    padding:35px;
-    border-radius:20px;
-}
+.box{background:white;padding:20px;width:320px;border-radius:15px}
 
-.auth-input{
-    width:100%;
-    padding:14px;
-    margin-top:12px;
-    border-radius:12px;
-    border:1px solid #dbeafe;
-}
-
-.auth-btn{
-    width:100%;
-    padding:14px;
-    margin-top:15px;
-    border:none;
-    background:var(--primary);
-    color:white;
-    border-radius:12px;
-    cursor:pointer;
-}
-
-.tabs{
-    display:flex;
-    margin-bottom:20px;
-    background:#eff6ff;
-    border-radius:10px;
-    padding:5px;
-}
-
-.tab{
-    flex:1;
-    text-align:center;
-    padding:10px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.tab.active{
-    background:white;
-    color:var(--primary);
-    font-weight:bold;
-}
-
-/* SIDEBAR */
-
-.sidebar{
-    width:260px;
-    background:white;
-    padding:20px;
-    border-right:1px solid #ddd;
-}
-
-.logo{
-    font-size:24px;
-    font-weight:bold;
-    color:var(--primary);
-    margin-bottom:30px;
-}
-
-.nav-item{
-    padding:14px;
-    border-radius:12px;
-    margin-bottom:10px;
-    cursor:pointer;
-}
-
-.nav-item:hover{
-    background:#eff6ff;
-}
-
-.nav-item.active{
-    background:#dbeafe;
-}
-
-/* CONTENT */
-
-.main{
-    flex:1;
-    padding:40px;
-}
-
-.page{
-    display:none;
-}
-
-.page.active{
-    display:block;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:20px;
-    margin-top:20px;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-    gap:20px;
-    margin-top:20px;
-}
-
-.item-box{
-    background:white;
-    padding:20px;
-    border-radius:20px;
-    text-align:center;
-}
-
-.item-box i{
-    font-size:40px;
-    color:var(--primary);
-    margin-bottom:10px;
-}
-
-.price{
-    font-size:26px;
-    color:var(--success);
-    font-weight:bold;
-    margin:10px 0;
-}
-
-.type{
-    background:#eff6ff;
-    padding:4px 10px;
-    border-radius:10px;
-    font-size:12px;
-    display:inline-block;
-    margin-top:10px;
-}
-
+.dark{background:#0f172a;color:white}
+.dark .card{background:#1e293b;color:white}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
+<!-- AUTH -->
+<div id="auth" class="modal" style="display:flex">
+<div class="box">
 
-<div id="auth-overlay">
+<h2>Giriş / Kayıt</h2>
 
-    <div class="auth-box">
+<input id="u" placeholder="kullanıcı">
+<input id="p" type="password" placeholder="şifre">
 
-        <h1 style="text-align:center;color:#2563eb;">
-            Siber Kasa
-        </h1>
+<button onclick="register()">Kayıt</button>
+<button onclick="login()">Giriş</button>
 
-        <div class="tabs">
+<p id="msg"></p>
 
-            <div class="tab active"
-            id="login-tab"
-            onclick="changeTab('login')">
+</div>
+</div>
 
-            Giriş
+<!-- PAYMENT -->
+<div id="pay" class="modal">
+<div class="box">
 
-            </div>
+<h3 id="pt">Ödeme</h3>
 
-            <div class="tab"
-            id="register-tab"
-            onclick="changeTab('register')">
+<input id="c1" placeholder="Kart sahibi">
+<input id="c2" placeholder="Kart no">
+<input id="c3" placeholder="AA/YY">
+<input id="c4" placeholder="CVV">
 
-            Kayıt
+<button onclick="buy()">Onayla</button>
+<button onclick="pay.style.display='none'">İptal</button>
 
-            </div>
-
-        </div>
-
-        <input type="text"
-        id="username"
-        class="auth-input"
-        placeholder="Kullanıcı adı">
-
-        <input type="password"
-        id="password"
-        class="auth-input"
-        placeholder="Şifre">
-
-        <button class="auth-btn"
-        id="main-btn"
-        onclick="processAuth()">
-
-        Giriş Yap
-
-        </button>
-
-        <p id="auth-error"
-        style="margin-top:15px;color:red;text-align:center;">
-        </p>
-
-    </div>
-
+</div>
 </div>
 
 <!-- SIDEBAR -->
-
 <div class="sidebar">
 
-    <div class="logo">
-        <i class="fas fa-shield-halved"></i>
-        Siber Kasa
-    </div>
-
-    <div class="nav-item active"
-    onclick="switchPage('home',this)">
-    Ana Sayfa
-    </div>
-
-    <div class="nav-item"
-    onclick="switchPage('create',this)">
-    Dosya Oluştur
-    </div>
-
-    <div class="nav-item"
-    onclick="switchPage('files',this)">
-    Dosyalarım
-    </div>
-
-    <div class="nav-item"
-    onclick="switchPage('market',this)">
-    Market
-    </div>
-
-    <div class="nav-item"
-    onclick="toggleDarkMode()">
-    Dark Mode
-    </div>
-
-    <div class="nav-item"
-    onclick="createFolder()">
-    Klasör Oluştur
-    </div>
-
-    <div class="nav-item"
-    onclick="logout()"
-    style="color:red;">
-    Çıkış
-    </div>
+<button onclick="show('home')">Ana</button>
+<button onclick="show('create')">Oluştur</button>
+<button onclick="show('files')">Dosyalar</button>
+<button onclick="show('market')">Market</button>
+<button onclick="toggle()">Dark</button>
+<button onclick="logout()">Çıkış</button>
 
 </div>
 
 <!-- MAIN -->
-
 <div class="main">
 
-    <!-- HOME -->
+<div id="home" class="page active">
+<h2>Panel</h2>
+<div class="card">
+Plan: <span id="plan">FREE</span>
+</div>
+</div>
 
-    <div class="page active"
-    id="home">
+<!-- CREATE -->
+<div id="create" class="page">
 
-        <h1>Hoş Geldin</h1>
+<h2>Dosya Oluştur</h2>
 
-        <div class="card">
+<input id="fname" placeholder="dosya adı">
 
-            <h3 id="premium-text">
-            Paket: FREE
-            </h3>
+<select id="type" onchange="typeChange()">
+<option value="text">Metin</option>
+<option value="file">Dosya</option>
+<option value="code">Kod</option>
+</select>
 
-            <br>
+<textarea id="ftext" placeholder="içerik" style="height:120px"></textarea>
 
-            <button class="auth-btn"
-            onclick="notify('Bildirim sistemi aktif')">
+<input type="file" id="fupload" style="display:none;margin-top:10px">
 
-            Test Bildirimi
+<input id="fpass" placeholder="şifre">
 
-            </button>
+<button onclick="save()">Kaydet</button>
 
-        </div>
+</div>
 
-    </div>
+<!-- FILES -->
+<div id="files" class="page">
 
-    <!-- CREATE -->
+<h2>Dosyalar</h2>
 
-    <div class="page"
-    id="create">
+<input id="search" placeholder="ara" onkeyup="search()">
 
-        <h1>Dosya Oluştur</h1>
+<div id="list"></div>
 
-        <div class="card">
+</div>
 
-            <input type="text"
-            id="fname"
-            class="auth-input"
-            placeholder="Dosya adı">
+<!-- MARKET -->
+<div id="market" class="page">
 
-            <select id="ftype"
-            class="auth-input"
-            onchange="changeType()">
+<h2>Market</h2>
 
-                <option value="text">
-                    Metin Dosyası
-                </option>
+<div class="grid">
 
-                <option value="file">
-                    Gerçek Dosya
-                </option>
+<div class="item">
+Süper 15$
+<button onclick="openPay('Süper')">Al</button>
+</div>
 
-            </select>
+<div class="item">
+Pro 40$
+<button onclick="openPay('Pro')">Al</button>
+</div>
 
-            <input type="password"
-            id="fpassword"
-            class="auth-input"
-            placeholder="Dosya şifresi">
+<div class="item">
+Elite 100$
+<button onclick="openPay('Elite')">Al</button>
+</div>
 
-            <div id="text-area">
+</div>
 
-                <textarea
-                id="fcontent"
-                class="auth-input"
-                style="height:180px;"
-                placeholder="Metin yaz"></textarea>
-
-            </div>
-
-            <div id="file-area"
-            style="display:none;">
-
-                <input type="file"
-                id="real-file"
-                class="auth-input">
-
-            </div>
-
-            <button class="auth-btn"
-            onclick="saveFile()">
-
-            Kaydet
-
-            </button>
-
-        </div>
-
-    </div>
-
-    <!-- FILES -->
-
-    <div class="page"
-    id="files">
-
-        <h1>Dosyalarım</h1>
-
-        <input type="text"
-        id="search"
-        class="auth-input"
-        placeholder="Dosya ara"
-        onkeyup="searchFiles()">
-
-        <div id="file-grid"
-        class="grid"></div>
-
-    </div>
-
-    <!-- MARKET -->
-
-    <div class="page"
-    id="market">
-
-        <h1>Market</h1>
-
-        <div class="grid">
-
-            <div class="item-box">
-                <i class="fas fa-shield"></i>
-                <h3>Süper Koruma</h3>
-                <div class="price">$15</div>
-
-                <button class="auth-btn"
-                onclick="buyPremium('Süper Koruma')">
-
-                Satın Al
-
-                </button>
-            </div>
-
-            <div class="item-box">
-                <i class="fas fa-lock"></i>
-                <h3>Üst Düzey Koruma</h3>
-                <div class="price">$40</div>
-
-                <button class="auth-btn"
-                onclick="buyPremium('Üst Düzey Koruma')">
-
-                Satın Al
-
-                </button>
-            </div>
-
-            <div class="item-box">
-                <i class="fas fa-crown"></i>
-                <h3>Ultra Security Elite</h3>
-                <div class="price">$100</div>
-
-                <button class="auth-btn"
-                onclick="buyPremium('Ultra Security Elite')">
-
-                Satın Al
-
-                </button>
-            </div>
-
-        </div>
-
-    </div>
+</div>
 
 </div>
 
 <script>
 
-/* =========================
-GENEL
-========================= */
+let user=""
+let selected=""
 
-let mode = "login";
-let currentUser = "";
-
-/* =========================
-ANTI F12
-========================= */
-
-document.onkeydown = function(e){
-
-    if(e.keyCode == 123){
-        return false;
-    }
-
-    if(
-        e.ctrlKey &&
-        e.shiftKey &&
-        e.keyCode == 'I'.charCodeAt(0)
-    ){
-        return false;
-    }
+/* DB */
+function db(){
+return JSON.parse(localStorage.getItem("db")||"{}")
+}
+function saveDB(d){
+localStorage.setItem("db",JSON.stringify(d))
 }
 
-/* =========================
-SAĞ TIK KAPAT
-========================= */
+/* REGISTER */
+function register(){
+let d=db()
+if(d[u.value]) return msg("var")
 
-document.addEventListener(
-'contextmenu',
-event => event.preventDefault()
-);
-
-/* =========================
-TAB
-========================= */
-
-function changeTab(type){
-
-    mode = type;
-
-    if(type === "login"){
-
-        login-tab.classList.add("active");
-        register-tab.classList.remove("active");
-
-        main-btn.innerText = "Giriş Yap";
-
-    }else{
-
-        register-tab.classList.add("active");
-        login-tab.classList.remove("active");
-
-        main-btn.innerText = "Kayıt Ol";
-    }
+d[u.value]={pass:p.value,files:[],plan:"FREE"}
+saveDB(d)
+msg("ok")
 }
 
-/* =========================
-AUTH
-========================= */
+/* LOGIN */
+function login(){
+let d=db()
 
-function processAuth(){
-
-    const username =
-    document.getElementById("username").value;
-
-    const password =
-    document.getElementById("password").value;
-
-    let users =
-    JSON.parse(
-        localStorage.getItem("vault_users")
-        || "{}"
-    );
-
-    if(mode === "register"){
-
-        if(users[username]){
-
-            auth-error.innerText =
-            "Bu kullanıcı var";
-
-            return;
-        }
-
-        users[username] = {
-
-            password:password,
-
-            premium:"FREE",
-
-            files:[],
-
-            folders:[],
-
-            profile:{
-                xp:0,
-                level:1,
-                badge:"Yeni Üye"
-            }
-        };
-
-        localStorage.setItem(
-            "vault_users",
-            JSON.stringify(users)
-        );
-
-        alert("Kayıt başarılı");
-
-        changeTab("login");
-
-    }else{
-
-        if(
-            users[username] &&
-            users[username].password === password
-        ){
-
-            currentUser = username;
-
-            localStorage.setItem(
-                "active_user",
-                username
-            );
-
-            auth-overlay.style.display = "none";
-
-            loadFiles();
-
-            updatePremium();
-
-        }else{
-
-            auth-error.innerText =
-            "Hatalı giriş";
-        }
-    }
+if(d[u.value]&&d[u.value].pass==p.value){
+user=u.value
+localStorage.setItem("u",user)
+auth.style.display="none"
+load()
+}else msg("hata")
 }
 
-/* =========================
-OTURUM
-========================= */
-
-window.onload = function(){
-
-    const active =
-    localStorage.getItem("active_user");
-
-    if(active){
-
-        currentUser = active;
-
-        auth-overlay.style.display = "none";
-
-        loadFiles();
-
-        updatePremium();
-    }
-}
-
-/* =========================
-PAGE
-========================= */
-
-function switchPage(id,el){
-
-    document.querySelectorAll(".page")
-    .forEach(p=>p.classList.remove("active"));
-
-    document.getElementById(id)
-    .classList.add("active");
-
-    document.querySelectorAll(".nav-item")
-    .forEach(n=>n.classList.remove("active"));
-
-    el.classList.add("active");
-}
-
-/* =========================
-TYPE
-========================= */
-
-function changeType(){
-
-    const type =
-    document.getElementById("ftype").value;
-
-    if(type === "text"){
-
-        text-area.style.display = "block";
-        file-area.style.display = "none";
-
-    }else{
-
-        text-area.style.display = "none";
-        file-area.style.display = "block";
-    }
-}
-
-/* =========================
-SAVE FILE
-========================= */
-
-function saveFile(){
-
-    const name = fname.value;
-    const type = ftype.value;
-    const pass = fpassword.value;
-
-    let users =
-    JSON.parse(localStorage.getItem("vault_users"));
-
-    if(type === "text"){
-
-        users[currentUser].files.push({
-
-            name:name,
-
-            type:type,
-
-            password:pass,
-
-            content:fcontent.value,
-
-            favorite:false
-        });
-
-        localStorage.setItem(
-            "vault_users",
-            JSON.stringify(users)
-        );
-
-        notify("Metin kaydedildi");
-
-        addXP(10);
-
-        loadFiles();
-
-    }else{
-
-        const file =
-        document.getElementById("real-file")
-        .files[0];
-
-        if(!file){
-
-            alert("Dosya seç");
-
-            return;
-        }
-
-        const reader =
-        new FileReader();
-
-        reader.onload = function(e){
-
-            users[currentUser].files.push({
-
-                name:name,
-
-                type:type,
-
-                password:pass,
-
-                filename:file.name,
-
-                data:e.target.result,
-
-                favorite:false
-            });
-
-            localStorage.setItem(
-                "vault_users",
-                JSON.stringify(users)
-            );
-
-            notify("Dosya yüklendi");
-
-            addXP(20);
-
-            loadFiles();
-        }
-
-        reader.readAsDataURL(file);
-    }
-}
-
-/* =========================
-LOAD FILES
-========================= */
-
-function loadFiles(){
-
-    const grid =
-    document.getElementById("file-grid");
-
-    grid.innerHTML = "";
-
-    let users =
-    JSON.parse(localStorage.getItem("vault_users"));
-
-    const files =
-    users[currentUser].files;
-
-    files.forEach((file,index)=>{
-
-        grid.innerHTML += `
-
-        <div class="item-box file-box">
-
-            <i class="fas fa-lock"></i>
-
-            <h3>${file.name}</h3>
-
-            <div class="type">
-                ${file.type}
-            </div>
-
-            <br><br>
-
-            <button class="auth-btn"
-            onclick="openFile(${index})">
-
-            Aç
-
-            </button>
-
-            <button class="auth-btn"
-            onclick="deleteFile(${index})">
-
-            Sil
-
-            </button>
-
-            <button class="auth-btn"
-            onclick="favoriteFile(${index})">
-
-            Favori
-
-            </button>
-
-            <button class="auth-btn"
-            onclick="shareFile(${index})">
-
-            Paylaş
-
-            </button>
-
-            <button class="auth-btn"
-            onclick="editFile(${index})">
-
-            Düzenle
-
-            </button>
-
-        </div>
-
-        `;
-    });
-}
-
-/* =========================
-OPEN FILE
-========================= */
-
-function openFile(index){
-
-    let users =
-    JSON.parse(localStorage.getItem("vault_users"));
-
-    const file =
-    users[currentUser].files[index];
-
-    const pass =
-    prompt("Dosya şifresi");
-
-    if(pass !== file.password){
-
-        alert("Şifre yanlış");
-
-        return;
-    }
-
-    if(file.type === "text"){
-
-        alert(file.content);
-
-    }else{
-
-        const a =
-        document.createElement("a");
-
-        a.href = file.data;
-
-        a.download = file.filename;
-
-        a.click();
-    }
-}
-
-/* =========================
-DELETE FILE
-========================= */
-
-function deleteFile(index){
-
-    let users =
-    JSON.parse(localStorage.getItem("vault_users"));
-
-    users[currentUser].files
-    .splice(index,1);
-
-    localStorage.setItem(
-        "vault_users",
-        JSON.stringify(users)
-    );
-
-    notify("Dosya silindi");
-
-    loadFiles();
-}
-
-/* =========================
-FAVORITE
-========================= */
-
-function favoriteFile(index){
-
-    let users =
-    JSON.parse(localStorage.getItem("vault_users"));
-
-    users[currentUser]
-    .files[index]
-    .favorite = true;
-
-    localStorage.setItem(
-        "vault_users",
-        JSON.stringify(users)
-    );
-
-    notify("Favorilere eklendi");
-}
-
-/* =========================
-SEARCH
-========================= */
-
-function searchFiles(){
-
-    const value =
-    search.value.toLowerCase();
-
-    document.querySelectorAll(".file-box")
-    .forEach(box=>{
-
-        if(
-            box.innerText.toLowerCase()
-            .includes(value)
-        ){
-
-            box.style.display = "block";
-
-        }else{
-
-            box.style.display = "none";
-        }
-    });
-}
-
-/* =========================
-PREMIUM
-========================= */
-
-function buyPremium(name){
-
-    let users =
-    JSON.parse(localStorage.getItem("vault_users"));
-
-    users[currentUser].premium = name;
-
-    localStorage.setItem(
-        "vault_users",
-        JSON.stringify(users)
-    );
-
-    updatePremium();
-
-    notify(name + " aktif edildi");
-}
-
-function updatePremium(){
-
-    let users =
-    JSON.parse(localStorage.getItem("vault_users"));
-
-    premium-text.innerText =
-    "Paket: " +
-    users[currentUser].premium;
-}
-
-/* =========================
-NOTIFY
-========================= */
-
-function notify(text){
-
-    const div =
-    document.createElement("div");
-
-    div.innerText = text;
-
-    div.style.position = "fixed";
-    div.style.right = "20px";
-    div.style.top = "20px";
-    div.style.background = "#10b981";
-    div.style.color = "white";
-    div.style.padding = "15px";
-    div.style.borderRadius = "10px";
-    div.style.zIndex = "9999";
-
-    document.body.appendChild(div);
-
-    setTimeout(()=>{
-        div.remove();
-    },3000);
-}
-
-/* =========================
-DARK MODE
-========================= */
-
-function toggleDarkMode(){
-
-    document.body.classList.toggle(
-        "dark-mode"
-    );
-}
-
-/* =========================
-XP
-========================= */
-
-function addXP(amount){
-
-    let users =
-    JSON.parse(localStorage.getItem("vault_users"));
-
-    users[currentUser]
-    .profile.xp += amount;
-
-    if(
-        users[currentUser]
-        .profile.xp >= 100
-    ){
-
-        users[currentUser]
-        .profile.level++;
-
-        users[currentUser]
-        .profile.xp = 0;
-
-        notify("Level atladın");
-    }
-
-    localStorage.setItem(
-        "vault_users",
-        JSON.stringify(users)
-    );
-}
-
-/* =========================
-EDIT
-========================= */
-
-function editFile(index){
-
-    let users =
-    JSON.parse(localStorage.getItem("vault_users"));
-
-    const file =
-    users[currentUser].files[index];
-
-    if(file.type !== "text"){
-        return;
-    }
-
-    const newText =
-    prompt(
-        "Yeni içerik",
-        file.content
-    );
-
-    if(newText !== null){
-
-        file.content = newText;
-
-        localStorage.setItem(
-            "vault_users",
-            JSON.stringify(users)
-        );
-
-        notify("Güncellendi");
-    }
-}
-
-/* =========================
-SHARE
-========================= */
-
-function shareFile(index){
-
-    const code =
-    Math.random()
-    .toString(36)
-    .substring(2,10);
-
-    alert(
-        "Paylaşım kodu: " + code
-    );
-}
-
-/* =========================
-FOLDER
-========================= */
-
-function createFolder(){
-
-    const folder =
-    prompt("Klasör adı");
-
-    if(!folder) return;
-
-    let users =
-    JSON.parse(localStorage.getItem("vault_users"));
-
-    users[currentUser]
-    .folders.push(folder);
-
-    localStorage.setItem(
-        "vault_users",
-        JSON.stringify(users)
-    );
-
-    notify("Klasör oluşturuldu");
-}
-
-/* =========================
-AUTO LOGOUT
-========================= */
-
-let timeout;
-
-function resetTimer(){
-
-    clearTimeout(timeout);
-
-    timeout = setTimeout(()=>{
-
-        alert("Oturum süresi doldu");
-
-        logout();
-
-    },300000);
-}
-
-window.onload = resetTimer;
-
-document.onmousemove = resetTimer;
-document.onkeypress = resetTimer;
-
-/* =========================
-LOGOUT
-========================= */
-
+/* LOGOUT */
 function logout(){
+localStorage.removeItem("u")
+location.reload()
+}
 
-    localStorage.removeItem(
-        "active_user"
-    );
+/* PAGE */
+function show(x){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+document.getElementById(x).classList.add("active")
+}
 
-    location.reload();
+/* TYPE SWITCH */
+function typeChange(){
+if(type.value=="file"){
+ftext.style.display="none"
+fupload.style.display="block"
+}else{
+ftext.style.display="block"
+fupload.style.display="none"
+}
+}
+
+/* SAVE */
+function save(){
+
+let d=db()
+
+function add(content){
+
+d[user].files.push({
+name:fname.value,
+type:type.value,
+data:content,
+pass:fpass.value
+})
+
+saveDB(d)
+load()
+}
+
+if(type.value=="file"){
+
+let r=new FileReader()
+r.onload=function(e){
+add(e.target.result)
+}
+r.readAsDataURL(fupload.files[0])
+
+}else{
+add(ftext.value)
+}
+
+}
+
+/* LOAD */
+function load(){
+
+let d=db()
+
+plan.innerText=d[user].plan
+
+list.innerHTML=""
+
+d[user].files.forEach((f,i)=>{
+list.innerHTML+=`
+<div class="card">
+<b>${f.name}</b>
+<button onclick="openF(${i})">Aç</button>
+</div>`
+})
+
+}
+
+/* OPEN FILE */
+function openF(i){
+
+let d=db()
+let f=d[user].files[i]
+
+let p=prompt("şifre")
+
+if(p!=f.pass){
+alert("yanlış")
+return
+}
+
+if(f.type=="file"){
+window.open(f.data)
+}else{
+alert(f.data)
+}
+
+}
+
+/* SEARCH */
+function search(){
+let v=search.value.toLowerCase()
+
+document.querySelectorAll(".card").forEach(c=>{
+c.style.display=c.innerText.toLowerCase().includes(v)?"block":"none"
+})
+}
+
+/* PAYMENT */
+function openPay(p){
+selected=p
+pay.style.display="flex"
+pt.innerText=p
+}
+
+function buy(){
+
+if(!c1.value||!c2.value||!c3.value||!c4.value){
+alert("eksik")
+return
+}
+
+let d=db()
+d[user].plan=selected
+saveDB(d)
+
+plan.innerText=selected
+pay.style.display="none"
+
+alert("satın alındı")
+}
+
+/* DARK */
+function toggle(){
+document.body.classList.toggle("dark")
+}
+
+/* AUTO LOGIN */
+window.onload=()=>{
+let u=localStorage.getItem("u")
+if(u){
+user=u
+auth.style.display="none"
+load()
+}
+}
+
+/* MSG */
+function msg(t){
+document.getElementById("msg").innerText=t
 }
 
 </script>
 
 </body>
-    </html>
+</html>
