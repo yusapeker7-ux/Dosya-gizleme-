@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siber Kasa</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eaeaea;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .header-text {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header-text h2 {
+            font-size: 24px;
+            color: #1a1a1a;
+        }
+
+        .header-text p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background-color: #fafafa;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            background-color: #fff;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+        }
+
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-secondary { background-color: #e2e6ea; color: #333; }
+        .btn-danger { background-color: #dc3545; color: white; padding: 8px 16px; flex: none;}
+        .btn-unlock { background-color: #28a745; color: white; padding: 6px 12px; font-size: 12px;}
+
+        .error-text { color: #dc3545; font-size: 14px; margin-top: 10px; text-align: center;}
+        .info-text { font-size: 12px; color: #888; margin-bottom: 10px;}
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .mt-20 { margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .item-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .item-card h4 {
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Giriş / Kayıt Ekranı -->
+        <div id="auth-section" class="card">
+            <div class="header-text">
+                <h2>Siber Kasa</h2>
+                <p>Güvenli Veri ve Mesaj Alanı</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Kullanıcı Adı</label>
+                <input type="text" id="username" placeholder="Kullanıcı adınızı girin">
+            </div>
+            <div class="form-group">
+                <label>Şifre</label>
+                <input type="password" id="password" placeholder="Şifrenizi girin">
+            </div>
+            
+            <div class="btn-group">
+                <button onclick="login()" class="btn btn-primary">Giriş Yap</button>
+                <button onclick="register()" class="btn btn-secondary">Kayıt Ol</button>
+            </div>
+            <p id="auth-message" class="error-text"></p>
+        </div>
+
+        <!-- Ana Panel Ekranı -->
+        <div id="dashboard-section" class="hidden">
+            <div class="dashboard-header">
+                <h2>Hoş Geldin, <span id="user-display"></span></h2>
+                <button onclick="logout()" class="btn btn-danger">Çıkış Yap</button>
+            </div>
+
+            <!-- Sekmeler -->
+            <div class="tabs">
+                <button onclick="switchTab('messages')" id="tab-messages" class="tab-btn active">Mesajlar</button>
+                <button onclick="switchTab('files')" id="tab-files" class="tab-btn">Dosyalar</button>
+            </div>
+
+            <!-- Mesajlar Bölümü -->
+            <div id="messages-section" class="tab-content card active">
+                <h3>Yeni Gizli Mesaj Oluştur</h3>
+                <div class="form-group">
+                    <input type="text" id="msg-title" placeholder="Mesaj Başlığı">
+                </div>
+                <div class="form-group">
+                    <textarea id="msg-content" rows="3" placeholder="Gizlenecek mesajınızı yazın..."></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="msg-password" placeholder="Bu mesaja özel kilit şifresi">
+                </div>
+                <button onclick="saveMessage()" class="btn btn-primary">Mesajı Şifrele ve Sakla</button>
+
+                <h3 class="mt-20">Kayıtlı Mesajlarım</h3>
+                <div id="messages-list" class="item-list"></div>
+            </div>
+
+            <!-- Dosyalar Bölümü -->
+            <div id="files-section" class="tab-content card hidden">
+                <h3>Yeni Güvenli Dosya Yükle</h3>
+                <p class="info-text">Not: Tarayıcı hafızası (LocalStorage) kullanıldığı için boyutu küçük dosyalar seçiniz.</p>
+                <div class="form-group">
+                    <input type="text" id="file-name" placeholder="Dosya İsmi (Görünecek İsim)">
+                </div>
+                <div class="form-group">
+                    <input type="file" id="file-input">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="file-password" placeholder="Bu dosyaya özel kilit şifresi">
+                </div>
+                <button onclick="saveFile()" class="btn btn-primary">Dosyayı Koru ve Yükle</button>
+
+                <h3 class="mt-20">Korunan Dosyalarım</h3>
+                <div id="files-list" class="item-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Veritabanı (LocalStorage) Yönetimi ---
+        let users = JSON.parse(localStorage.getItem('siber_kasa_users')) || {};
+        let currentUser = localStorage.getItem('siber_kasa_current_user') || null;
+
+        // Sayfa yüklendiğinde oturum kontrolü
+        window.onload = () => {
+            if (currentUser) {
+                showDashboard();
+            }
+        };
+
+        function saveDatabase() {
+            localStorage.setItem('siber_kasa_users', JSON.stringify(users));
+        }
+
+        // --- Kayıt ve Giriş İşlemleri ---
+        function register() {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const msgEl = document.getElementById('auth-message');
+
+            if (!user || !pass) {
+                msgEl.innerText = "Kullanıcı adı ve şifre boş olamaz!";
+                return;
+            }
+
+            if (users[user]) {
+                msgEl.innerText = "Bu kullanıcı adı zaten alınmış!";
+                return;
+            }
+
+            // Yeni kullanıcı oluştur
+            users[user] = {
+                password: pass,
+                messages: [],
+                files: []
+            };
+            
+            saveDatabase();
+            currentUser = user;
+            localStorage.setItem('siber_kasa_current_user', currentUser);
+            showDashboard();
+        }
+
+        function login() {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const msgEl = document.getElementById('auth-message');
+
+            if (users[user] && users[user].password === pass) {
+                currentUser = user;
+                localStorage.setItem('siber_kasa_current_user', currentUser);
+                showDashboard();
+            } else {
+                msgEl.innerText = "Hatalı kullanıcı adı veya şifre!";
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('siber_kasa_current_user');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('auth-section').classList.remove('hidden');
+        }
+
+        // --- Arayüz Yönetimi ---
+        function showDashboard() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            document.getElementById('user-display').innerText = currentUser;
+            loadUserData();
+        }
+
+        function switchTab(tab) {
+            document.getElementById('tab-messages').classList.remove('active');
+            document.getElementById('tab-files').classList.remove('active');
+            document.getElementById('messages-section').classList.remove('active', 'hidden');
+            document.getElementById('files-section').classList.remove('active', 'hidden');
+
+            if (tab === 'messages') {
+                document.getElementById('tab-messages').classList.add('active');
+                document.getElementById('messages-section').classList.add('active');
+                document.getElementById('files-section').classList.add('hidden');
+            } else {
+                document.getElementById('tab-files').classList.add('active');
+                document.getElementById('files-section').classList.add('active');
+                document.getElementById('messages-section').classList.add('hidden');
+            }
+        }
+
+        function loadUserData() {
+            renderMessages();
+            renderFiles();
+        }
+
+        // --- Mesaj Şifreleme Bölümü ---
+        function saveMessage() {
+            const title = document.getElementById('msg-title').value.trim();
+            const content = document.getElementById('msg-content').value.trim();
+            const itemPassword = document.getElementById('msg-password').value.trim();
+
+            if (!title || !content || !itemPassword) return alert("Tüm alanları doldurun!");
+
+            // Basit şifreleme simülasyonu (Metni Base64'e çevirir)
+            const encryptedContent = btoa(encodeURIComponent(content));
+
+            const newMessage = {
+                id: Date.now().toString(),
+                title: title,
+                content: encryptedContent,
+                key: itemPassword
+            };
+
+            users[currentUser].messages.push(newMessage);
+            saveDatabase();
+            
+            // Formu temizle
+            document.getElementById('msg-title').value = '';
+            document.getElementById('msg-content').value = '';
+            document.getElementById('msg-password').value = '';
+            
+            renderMessages();
+            alert("Mesaj şifrelenerek kasaya eklendi!");
+        }
+
+        function renderMessages() {
+            const list = document.getElementById('messages-list');
+            list.innerHTML = '';
+            
+            users[currentUser].messages.forEach(msg => {
+                list.innerHTML += `
+                    <div class="item-card">
+                        <div>
+                            <h4>🔒 ${msg.title}</h4>
+                        </div>
+                        <button onclick="unlockMessage('${msg.id}')" class="btn btn-unlock">Kilidi Aç</button>
+                    </div>
+                `;
+            });
+        }
+
+        function unlockMessage(id) {
+            const msg = users[currentUser].messages.find(m => m.id === id);
+            const enteredKey = prompt(`"${msg.title}" mesajını okumak için kilit şifresini girin:`);
+            
+            if (enteredKey === msg.key) {
+                // Şifreyi çöz (Base64'ten geri çevirir)
+                const decryptedContent = decodeURIComponent(atob(msg.content));
+                alert(`Gizli Mesaj:\n\n${decryptedContent}`);
+            } else if (enteredKey !== null) {
+                alert("Hatalı kilit şifresi! Mesaja erişim reddedildi.");
+            }
+        }
+
+        // --- Dosya Koruması Bölümü ---
+        function saveFile() {
+            const name = document.getElementById('file-name').value.trim();
+            const fileInput = document.getElementById('file-input');
+            const itemPassword = document.getElementById('file-password').value.trim();
+
+            if (!name || fileInput.files.length === 0 || !itemPassword) {
+                return alert("Lütfen dosya ismi, şifre belirleyin ve bir dosya seçin.");
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const fileData = e.target.result;
+
+                const newFile = {
+                    id: Date.now().toString(),
+                    name: name,
+                    data: fileData,
+                    fileName: file.name,
+                    key: itemPassword
+                };
+
+                try {
+                    users[currentUser].files.push(newFile);
+                    saveDatabase();
+                    
+                    // Formu temizle
+                    document.getElementById('file-name').value = '';
+                    document.getElementById('file-input').value = '';
+                    document.getElementById('file-password').value = '';
+                    
+                    renderFiles();
+                    alert("Dosya güvenli bir şekilde kasaya eklendi!");
+                } catch (error) {
+                    alert("Hata! Dosya çok büyük olabilir. LocalStorage limitini (yaklaşık 5MB) aştınız.");
+                    users[currentUser].files.pop(); 
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function renderFiles() {
+            const list = document.getElementById('files-list');
+            list.innerHTML = '';
+            
+            users[currentUser].files.forEach(file => {
+                list.innerHTML += `
+                    <div class="item-card">
+                        <div>
+                            <h4>📁 ${file.name}</h4>
+                            <small>${file.fileName}</small>
+                        </div>
+                        <button onclick="unlockFile('${file.id}')" class="btn btn-unlock">İndir / Aç</button>
+                    </div>
+                `;
+            });
+        }
+
+        function unlockFile(id) {
+            const file = users[currentUser].files.find(f => f.id === id);
+            const enteredKey = prompt(`"${file.name}" dosyasını indirmek için kilit şifresini girin:`);
+            
+            if (enteredKey === file.key) {
+                const a = document.createElement('a');
+                a.href = file.data;
+                a.download = file.fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else if (enteredKey !== null) {
+                alert("Hatalı kilit şifresi! Dosyaya erişim reddedildi.");
+            }
+        }
+    </script>
+</body>
+</html>
+
