@@ -3,473 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siber Kasa</title>
+    <title>Siber Kasa Pro - Güvenli Depo & Market</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        /* GENEL TASARIM */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #f8f9fa; display: flex; min-height: 100vh; color: #333; }
 
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .card {
+        /* SOL YAN MENÜ */
+        .sidebar {
+            width: 280px;
             background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-            border: 1px solid #eaeaea;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .header-text {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .header-text h2 {
-            font-size: 24px;
-            color: #1a1a1a;
-        }
-
-        .header-text p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            background-color: #fafafa;
-            font-size: 14px;
-            transition: border 0.3s;
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #007bff;
-            background-color: #fff;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: opacity 0.2s;
-        }
-
-        .btn:hover {
-            opacity: 0.85;
-        }
-
-        .btn-primary { background-color: #007bff; color: white; }
-        .btn-secondary { background-color: #e2e6ea; color: #333; }
-        .btn-danger { background-color: #dc3545; color: white; padding: 8px 16px; flex: none;}
-        .btn-unlock { background-color: #28a745; color: white; padding: 6px 12px; font-size: 12px;}
-
-        .error-text { color: #dc3545; font-size: 14px; margin-top: 10px; text-align: center;}
-        .info-text { font-size: 12px; color: #888; margin-bottom: 10px;}
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-weight: 600;
-            color: #666;
-            border-bottom: 2px solid transparent;
-        }
-
-        .tab-btn.active {
-            color: #007bff;
-            border-bottom: 2px solid #007bff;
-        }
-
-        .mt-20 { margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
-
-        .item-list {
+            border-right: 1px solid #e0e0e0;
+            padding: 25px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            position: fixed;
+            height: 100vh;
+        }
+        .logo { font-size: 24px; font-weight: 800; color: #007bff; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
+        .nav-group { margin-bottom: 30px; }
+        .nav-title { font-size: 12px; text-transform: uppercase; color: #aaa; letter-spacing: 1px; margin-bottom: 15px; display: block; }
+        .nav-item { 
+            padding: 12px 15px; border-radius: 10px; cursor: pointer; transition: 0.3s; 
+            display: flex; align-items: center; gap: 10px; text-decoration: none; color: #444; font-weight: 500;
+        }
+        .nav-item:hover { background-color: #f0f4f8; color: #007bff; }
+        .nav-item.active { background-color: #007bff; color: white; }
+        .premium-btn { background: linear-gradient(45deg, #FFD700, #FFA500); color: white !important; font-weight: bold; margin-top: auto; }
+
+        /* ANA İÇERİK ALANI */
+        .main-content { margin-left: 280px; flex: 1; padding: 40px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        /* DOSYA OLUŞTURMA ALANI */
+        .file-upload-zone {
+            background: white; border: 2px dashed #007bff; border-radius: 20px; padding: 40px;
+            text-align: center; margin-bottom: 40px; cursor: pointer; transition: 0.3s;
+        }
+        .file-upload-zone:hover { background: #f0f7ff; }
+
+        /* DOSYA KARTLARI */
+        .section-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; display: flex; justify-content: space-between; }
+        .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-bottom: 50px; }
+        .file-card { 
+            background: white; border-radius: 15px; padding: 20px; border: 1px solid #eee; 
+            position: relative; transition: 0.3s; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        .file-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .file-icon { font-size: 40px; margin-bottom: 10px; display: block; }
+        .file-options { position: absolute; top: 10px; right: 10px; cursor: pointer; color: #ccc; }
+
+        /* MARKET ALANI */
+        .market-section { background: #fff; border-radius: 20px; padding: 30px; border: 1px solid #ffeeba; }
+        .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .market-item { 
+            border: 1px solid #f0f0f0; border-radius: 15px; padding: 20px; text-align: center; 
+            background: #fafafa; transition: 0.3s;
+        }
+        .market-item:hover { border-color: #28a745; background: white; }
+        .price-tag { font-size: 22px; font-weight: 800; color: #28a745; margin: 10px 0; }
+        .buy-btn { 
+            width: 100%; padding: 10px; border: none; border-radius: 8px; 
+            background: #333; color: white; cursor: pointer; font-weight: 600;
         }
 
-        .item-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #eee;
+        /* MODAL (DOSYA TÜRÜ SEÇİMİ) */
+        .modal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000;
         }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 400px; text-align: center; }
+        .type-btn { 
+            display: block; width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #eee; 
+            border-radius: 10px; cursor: pointer; text-align: left; font-weight: 500;
+        }
+        .type-btn:hover { background: #f8f9fa; border-color: #007bff; }
+        .premium-type { border-color: #ffd700; background: #fffdf0; }
 
-        .item-card h4 {
-            font-size: 16px;
-            color: #333;
-        }
+        /* ÖDEME MODAL */
+        .payment-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Giriş / Kayıt Ekranı -->
-        <div id="auth-section" class="card">
-            <div class="header-text">
-                <h2>Siber Kasa</h2>
-                <p>Güvenli Veri ve Mesaj Alanı</p>
+    <div class="sidebar">
+        <div class="logo">🛡️ SIBER KASA</div>
+        <div class="nav-group">
+            <span class="nav-title">Depolama</span>
+            <div class="nav-item active">📂 Tüm Dosyalar</div>
+            <div class="nav-item">💻 Kodlama Projeleri</div>
+            <div class="nav-item">📄 PDF Arşivi</div>
+            <div class="nav-item">📝 Notlar ve Metinler</div>
+        </div>
+        <div class="nav-group">
+            <span class="nav-title">Hizmetler</span>
+            <div class="nav-item">🛒 Siber Market</div>
+            <div class="nav-item">🛡️ Güvenlik Kayıtları</div>
+        </div>
+        <a href="#" class="nav-item premium-btn" onclick="openPayment()">👑 PREMIUM'A GEÇ ($15)</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>Hoş Geldin, <span id="user-name">Kullanıcı</span></h2>
+            <div style="display: flex; gap: 15px;">
+                <input type="text" placeholder="Dosya ara..." style="padding: 10px; border-radius: 10px; border: 1px solid #ddd; width: 250px;">
+                <button class="buy-btn" style="width: auto; padding: 0 20px;">Çıkış</button>
             </div>
-            
-            <div class="form-group">
-                <label>Kullanıcı Adı</label>
-                <input type="text" id="username" placeholder="Kullanıcı adınızı girin">
-            </div>
-            <div class="form-group">
-                <label>Şifre</label>
-                <input type="password" id="password" placeholder="Şifrenizi girin">
-            </div>
-            
-            <div class="btn-group">
-                <button onclick="login()" class="btn btn-primary">Giriş Yap</button>
-                <button onclick="register()" class="btn btn-secondary">Kayıt Ol</button>
-            </div>
-            <p id="auth-message" class="error-text"></p>
         </div>
 
-        <!-- Ana Panel Ekranı -->
-        <div id="dashboard-section" class="hidden">
-            <div class="dashboard-header">
-                <h2>Hoş Geldin, <span id="user-display"></span></h2>
-                <button onclick="logout()" class="btn btn-danger">Çıkış Yap</button>
+        <div class="file-upload-zone" onclick="openModal()">
+            <span style="font-size: 50px;">➕</span>
+            <h3>Yeni Dosya Oluştur veya Yükle</h3>
+            <p>Kodlama, PDF, Not veya Üst Düzey Korumalı öğe eklemek için tıkla</p>
+        </div>
+
+        <div class="section-title">📦 Kayıtlı Dosyaların <span>...</span></div>
+        <div class="file-grid" id="file-display">
+            <div class="file-card">
+                <span class="file-options">⋮</span>
+                <span class="file-icon">💻</span>
+                <strong>app.js</strong>
+                <p style="font-size: 12px; color: #888;">Kodlama Dosyası</p>
             </div>
-
-            <!-- Sekmeler -->
-            <div class="tabs">
-                <button onclick="switchTab('messages')" id="tab-messages" class="tab-btn active">Mesajlar</button>
-                <button onclick="switchTab('files')" id="tab-files" class="tab-btn">Dosyalar</button>
+            <div class="file-card">
+                <span class="file-options">⋮</span>
+                <span class="file-icon">📄</span>
+                <strong>sozlesme.pdf</strong>
+                <p style="font-size: 12px; color: #888;">Normal PDF</p>
             </div>
+        </div>
 
-            <!-- Mesajlar Bölümü -->
-            <div id="messages-section" class="tab-content card active">
-                <h3>Yeni Gizli Mesaj Oluştur</h3>
-                <div class="form-group">
-                    <input type="text" id="msg-title" placeholder="Mesaj Başlığı">
+        <div class="market-section">
+            <h3 style="margin-bottom: 20px;">🛒 Siber Market - Güvenlik Mağazası</h3>
+            <div class="market-grid">
+                <div class="market-item">
+                    <h4>Kuantum Şifreleme</h4>
+                    <div class="price-tag">$12.00</div>
+                    <p style="font-size: 12px; margin-bottom: 15px;">Dosyalarınız 256-bit yerine 1024-bit şifrelenir.</p>
+                    <button class="buy-btn" onclick="openPayment()">Satın Al</button>
                 </div>
-                <div class="form-group">
-                    <textarea id="msg-content" rows="3" placeholder="Gizlenecek mesajınızı yazın..."></textarea>
+                <div class="market-item">
+                    <h4>VPN Kalkanı</h4>
+                    <div class="price-tag">$10.00</div>
+                    <p style="font-size: 12px; margin-bottom: 15px;">Siteye giriş yaparken IP adresinizi gizler.</p>
+                    <button class="buy-btn" onclick="openPayment()">Satın Al</button>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="msg-password" placeholder="Bu mesaja özel kilit şifresi">
+                <div class="market-item">
+                    <h4>AI Dedektör</h4>
+                    <p style="background: #e8f5e9; color: #2e7d32; font-size: 10px; display: inline-block; padding: 2px 8px; border-radius: 10px;">POPÜLER</p>
+                    <div class="price-tag">$14.50</div>
+                    <p style="font-size: 12px; margin-bottom: 15px;">Dosyalarınıza sızmaya çalışanları önceden tespit eder.</p>
+                    <button class="buy-btn" onclick="openPayment()">Satın Al</button>
                 </div>
-                <button onclick="saveMessage()" class="btn btn-primary">Mesajı Şifrele ve Sakla</button>
-
-                <h3 class="mt-20">Kayıtlı Mesajlarım</h3>
-                <div id="messages-list" class="item-list"></div>
-            </div>
-
-            <!-- Dosyalar Bölümü -->
-            <div id="files-section" class="tab-content card hidden">
-                <h3>Yeni Güvenli Dosya Yükle</h3>
-                <p class="info-text">Not: Tarayıcı hafızası (LocalStorage) kullanıldığı için boyutu küçük dosyalar seçiniz.</p>
-                <div class="form-group">
-                    <input type="text" id="file-name" placeholder="Dosya İsmi (Görünecek İsim)">
-                </div>
-                <div class="form-group">
-                    <input type="file" id="file-input">
-                </div>
-                <div class="form-group">
-                    <input type="password" id="file-password" placeholder="Bu dosyaya özel kilit şifresi">
-                </div>
-                <button onclick="saveFile()" class="btn btn-primary">Dosyayı Koru ve Yükle</button>
-
-                <h3 class="mt-20">Korunan Dosyalarım</h3>
-                <div id="files-list" class="item-list"></div>
             </div>
         </div>
     </div>
 
+    <div class="modal" id="typeModal">
+        <div class="modal-content">
+            <h3>Hangi Tür Dosya?</h3>
+            <p style="color: #888; font-size: 13px; margin-bottom: 20px;">Oluşturmak istediğiniz dosya türünü seçin</p>
+            <button class="type-btn" onclick="createFile('💻', 'Kodlama Dosyası')">💻 Kodlama Dosyası</button>
+            <button class="type-btn" onclick="createFile('📄', 'PDF Belgesi')">📄 Normal PDF</button>
+            <button class="type-btn" onclick="createFile('📝', 'Metin Notu')">📝 Sadece Metin</button>
+            <button class="type-btn premium-type" onclick="openPayment()">💎 Üst Düzey Korumalı (PREMIUM)</button>
+            <button onclick="closeModal()" style="margin-top: 15px; background: none; border: none; color: red; cursor: pointer;">İptal</button>
+        </div>
+    </div>
+
+    <div class="payment-modal" id="paymentModal">
+        <div class="modal-content" style="width: 450px;">
+            <h2 style="color: #28a745;">💳 Güvenli Ödeme</h2>
+            <p style="margin-bottom: 20px;">Siber Kasa Premium İşlemi</p>
+            <div style="text-align: left;">
+                <label>Kart Sahibi</label>
+                <input type="text" placeholder="Ad Soyad" style="margin-bottom: 15px;">
+                <label>Kart Numarası</label>
+                <input type="text" placeholder="0000 0000 0000 0000" style="margin-bottom: 15px;">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" placeholder="AA/YY">
+                    <input type="text" placeholder="CVV">
+                </div>
+            </div>
+            <button class="buy-btn" style="background: #28a745; margin-top: 20px; padding: 15px;" onclick="alert('Ödeme Başarılı! Premium Aktif Edildi.'); closePayment();">ÖDEMEYİ TAMAMLA</button>
+            <button onclick="closePayment()" style="margin-top: 15px; background: none; border: none; cursor: pointer;">Geri Dön</button>
+        </div>
+    </div>
+
     <script>
-        // --- Veritabanı (LocalStorage) Yönetimi ---
-        let users = JSON.parse(localStorage.getItem('siber_kasa_users')) || {};
-        let currentUser = localStorage.getItem('siber_kasa_current_user') || null;
+        function openModal() { document.getElementById('typeModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('typeModal').style.display = 'none'; }
+        
+        function openPayment() { document.getElementById('paymentModal').style.display = 'flex'; }
+        function closePayment() { document.getElementById('paymentModal').style.display = 'none'; }
 
-        // Sayfa yüklendiğinde oturum kontrolü
-        window.onload = () => {
-            if (currentUser) {
-                showDashboard();
-            }
-        };
-
-        function saveDatabase() {
-            localStorage.setItem('siber_kasa_users', JSON.stringify(users));
-        }
-
-        // --- Kayıt ve Giriş İşlemleri ---
-        function register() {
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
-            const msgEl = document.getElementById('auth-message');
-
-            if (!user || !pass) {
-                msgEl.innerText = "Kullanıcı adı ve şifre boş olamaz!";
-                return;
-            }
-
-            if (users[user]) {
-                msgEl.innerText = "Bu kullanıcı adı zaten alınmış!";
-                return;
-            }
-
-            // Yeni kullanıcı oluştur
-            users[user] = {
-                password: pass,
-                messages: [],
-                files: []
-            };
+        function createFile(icon, typeName) {
+            const fileName = prompt("Dosya ismini girin:");
+            const filePass = prompt("Bu dosyaya özel şifre belirleyin:");
             
-            saveDatabase();
-            currentUser = user;
-            localStorage.setItem('siber_kasa_current_user', currentUser);
-            showDashboard();
-        }
-
-        function login() {
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
-            const msgEl = document.getElementById('auth-message');
-
-            if (users[user] && users[user].password === pass) {
-                currentUser = user;
-                localStorage.setItem('siber_kasa_current_user', currentUser);
-                showDashboard();
-            } else {
-                msgEl.innerText = "Hatalı kullanıcı adı veya şifre!";
-            }
-        }
-
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('siber_kasa_current_user');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('dashboard-section').classList.add('hidden');
-            document.getElementById('auth-section').classList.remove('hidden');
-        }
-
-        // --- Arayüz Yönetimi ---
-        function showDashboard() {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('dashboard-section').classList.remove('hidden');
-            document.getElementById('user-display').innerText = currentUser;
-            loadUserData();
-        }
-
-        function switchTab(tab) {
-            document.getElementById('tab-messages').classList.remove('active');
-            document.getElementById('tab-files').classList.remove('active');
-            document.getElementById('messages-section').classList.remove('active', 'hidden');
-            document.getElementById('files-section').classList.remove('active', 'hidden');
-
-            if (tab === 'messages') {
-                document.getElementById('tab-messages').classList.add('active');
-                document.getElementById('messages-section').classList.add('active');
-                document.getElementById('files-section').classList.add('hidden');
-            } else {
-                document.getElementById('tab-files').classList.add('active');
-                document.getElementById('files-section').classList.add('active');
-                document.getElementById('messages-section').classList.add('hidden');
-            }
-        }
-
-        function loadUserData() {
-            renderMessages();
-            renderFiles();
-        }
-
-        // --- Mesaj Şifreleme Bölümü ---
-        function saveMessage() {
-            const title = document.getElementById('msg-title').value.trim();
-            const content = document.getElementById('msg-content').value.trim();
-            const itemPassword = document.getElementById('msg-password').value.trim();
-
-            if (!title || !content || !itemPassword) return alert("Tüm alanları doldurun!");
-
-            // Basit şifreleme simülasyonu (Metni Base64'e çevirir)
-            const encryptedContent = btoa(encodeURIComponent(content));
-
-            const newMessage = {
-                id: Date.now().toString(),
-                title: title,
-                content: encryptedContent,
-                key: itemPassword
-            };
-
-            users[currentUser].messages.push(newMessage);
-            saveDatabase();
-            
-            // Formu temizle
-            document.getElementById('msg-title').value = '';
-            document.getElementById('msg-content').value = '';
-            document.getElementById('msg-password').value = '';
-            
-            renderMessages();
-            alert("Mesaj şifrelenerek kasaya eklendi!");
-        }
-
-        function renderMessages() {
-            const list = document.getElementById('messages-list');
-            list.innerHTML = '';
-            
-            users[currentUser].messages.forEach(msg => {
-                list.innerHTML += `
-                    <div class="item-card">
-                        <div>
-                            <h4>🔒 ${msg.title}</h4>
-                        </div>
-                        <button onclick="unlockMessage('${msg.id}')" class="btn btn-unlock">Kilidi Aç</button>
-                    </div>
+            if(fileName && filePass) {
+                const grid = document.getElementById('file-display');
+                const newCard = document.createElement('div');
+                newCard.className = 'file-card';
+                newCard.innerHTML = `
+                    <span class="file-options">⋮</span>
+                    <span class="file-icon">${icon}</span>
+                    <strong>${fileName}</strong>
+                    <p style="font-size: 12px; color: #888;">${typeName}</p>
                 `;
-            });
-        }
-
-        function unlockMessage(id) {
-            const msg = users[currentUser].messages.find(m => m.id === id);
-            const enteredKey = prompt(`"${msg.title}" mesajını okumak için kilit şifresini girin:`);
-            
-            if (enteredKey === msg.key) {
-                // Şifreyi çöz (Base64'ten geri çevirir)
-                const decryptedContent = decodeURIComponent(atob(msg.content));
-                alert(`Gizli Mesaj:\n\n${decryptedContent}`);
-            } else if (enteredKey !== null) {
-                alert("Hatalı kilit şifresi! Mesaja erişim reddedildi.");
-            }
-        }
-
-        // --- Dosya Koruması Bölümü ---
-        function saveFile() {
-            const name = document.getElementById('file-name').value.trim();
-            const fileInput = document.getElementById('file-input');
-            const itemPassword = document.getElementById('file-password').value.trim();
-
-            if (!name || fileInput.files.length === 0 || !itemPassword) {
-                return alert("Lütfen dosya ismi, şifre belirleyin ve bir dosya seçin.");
-            }
-
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const fileData = e.target.result;
-
-                const newFile = {
-                    id: Date.now().toString(),
-                    name: name,
-                    data: fileData,
-                    fileName: file.name,
-                    key: itemPassword
-                };
-
-                try {
-                    users[currentUser].files.push(newFile);
-                    saveDatabase();
-                    
-                    // Formu temizle
-                    document.getElementById('file-name').value = '';
-                    document.getElementById('file-input').value = '';
-                    document.getElementById('file-password').value = '';
-                    
-                    renderFiles();
-                    alert("Dosya güvenli bir şekilde kasaya eklendi!");
-                } catch (error) {
-                    alert("Hata! Dosya çok büyük olabilir. LocalStorage limitini (yaklaşık 5MB) aştınız.");
-                    users[currentUser].files.pop(); 
-                }
-            };
-
-            reader.readAsDataURL(file);
-        }
-
-        function renderFiles() {
-            const list = document.getElementById('files-list');
-            list.innerHTML = '';
-            
-            users[currentUser].files.forEach(file => {
-                list.innerHTML += `
-                    <div class="item-card">
-                        <div>
-                            <h4>📁 ${file.name}</h4>
-                            <small>${file.fileName}</small>
-                        </div>
-                        <button onclick="unlockFile('${file.id}')" class="btn btn-unlock">İndir / Aç</button>
-                    </div>
-                `;
-            });
-        }
-
-        function unlockFile(id) {
-            const file = users[currentUser].files.find(f => f.id === id);
-            const enteredKey = prompt(`"${file.name}" dosyasını indirmek için kilit şifresini girin:`);
-            
-            if (enteredKey === file.key) {
-                const a = document.createElement('a');
-                a.href = file.data;
-                a.download = file.fileName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            } else if (enteredKey !== null) {
-                alert("Hatalı kilit şifresi! Dosyaya erişim reddedildi.");
+                grid.appendChild(newCard);
+                closeModal();
+                alert("Dosya şifreli olarak oluşturuldu!");
             }
         }
     </script>
