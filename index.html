@@ -3,198 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LGS Puan Hesaplama</title>
+<title>Siber Akademi</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:#eef2ff;
+background:#0b1220;
+color:#e5e7eb;
 }
 
-.container{
-max-width:700px;
-margin:40px auto;
-background:white;
-border-radius:15px;
-overflow:hidden;
-box-shadow:0 10px 25px rgba(0,0,0,.1);
-}
-
-/* TAB BAR */
-.tabs{
+/* LOGIN */
+#gate{
+position:fixed;
+inset:0;
+background:#0b1220;
 display:flex;
-background:#2563eb;
+justify-content:center;
+align-items:center;
 }
 
-.tab{
-flex:1;
-padding:15px;
-text-align:center;
-color:white;
-cursor:pointer;
-font-weight:bold;
-}
-
-.tab.active{
-background:#1d4ed8;
-}
-
-/* CONTENT */
-.content{
+.box{
+width:400px;
+background:#111827;
 padding:20px;
-display:none;
+border-radius:12px;
+border:1px solid #1f2937;
 }
 
-.content.active{
-display:block;
-}
-
-/* INPUT */
 input{
 width:100%;
 padding:10px;
-margin-top:8px;
-border-radius:10px;
-border:1px solid #ccc;
+margin-top:10px;
+border-radius:8px;
+border:1px solid #374151;
+background:#0f172a;
+color:white;
 }
 
 button{
 width:100%;
 padding:10px;
-margin-top:15px;
+margin-top:10px;
 border:none;
+border-radius:8px;
 background:#2563eb;
 color:white;
-border-radius:10px;
 cursor:pointer;
-font-weight:bold;
 }
 
-.result{
-margin-top:15px;
-font-size:18px;
-font-weight:bold;
-color:#16a34a;
-text-align:center;
+/* LAYOUT */
+.container{
+display:none;
+height:100vh;
 }
 
-.small{
-font-size:13px;
-color:#64748b;
-text-align:center;
+.sidebar{
+width:220px;
+background:#0f172a;
+padding:15px;
+border-right:1px solid #1f2937;
+}
+
+.main{
+flex:1;
+padding:20px;
+}
+
+.flex{display:flex}
+
+/* TAB */
+.page{display:none}
+.page.active{display:block}
+
+.item{
+background:#111827;
+padding:15px;
+border-radius:10px;
 margin-top:10px;
+border:1px solid #1f2937;
+cursor:pointer;
+}
+
+h2{color:#60a5fa}
+.small{font-size:13px;color:#9ca3af}
+
+/* TOP WARNING */
+.warn{
+font-size:13px;
+padding:10px;
+background:#1f2937;
+border-left:4px solid #ef4444;
+margin-bottom:15px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- LOGIN / GATE -->
+<div id="gate">
+<div class="box">
 
-<!-- TAB BUTTONS -->
-<div class="tabs">
-<div class="tab active" onclick="openTab(0)">LGS Hesaplama</div>
-<div class="tab" onclick="openTab(1)">Hakkımızda</div>
+<h2>Siber Akademi</h2>
+
+<div class="warn">
+Bu platform sadece <b>yasal yazılım eğitimi</b> ve <b>siber güvenlik farkındalığı</b> içindir.  
+İzinsiz erişim, saldırı veya kötüye kullanım içerikleri öğretilmez.
 </div>
 
-<!-- LGS -->
-<div class="content active">
+<input id="u" placeholder="kullanıcı">
+<input id="p" type="password" placeholder="şifre">
 
-<h2>LGS Net & Puan Hesaplama</h2>
+<button onclick="enter()">Giriş</button>
 
-<input id="d1" type="number" placeholder="Türkçe Doğru">
-<input id="y1" type="number" placeholder="Türkçe Yanlış">
+</div>
+</div>
 
-<input id="d2" type="number" placeholder="Matematik Doğru">
-<input id="y2" type="number" placeholder="Matematik Yanlış">
+<!-- APP -->
+<div class="container flex" id="app">
 
-<input id="d3" type="number" placeholder="Fen Doğru">
-<input id="y3" type="number" placeholder="Fen Yanlış">
+<!-- SIDEBAR -->
+<div class="sidebar">
 
-<input id="d4" type="number" placeholder="İnkılap Doğru">
-<input id="y4" type="number" placeholder="İnkılap Yanlış">
+<h3>Siber Akademi</h3>
 
-<input id="d5" type="number" placeholder="Din Doğru">
-<input id="y5" type="number" placeholder="Din Yanlış">
+<div class="item" onclick="show('home')">📚 Dersler</div>
+<div class="item" onclick="show('python')">🐍 Python</div>
+<div class="item" onclick="show('web')">🌐 Web</div>
+<div class="item" onclick="show('linux')">🐧 Kali Linux</div>
+<div class="item" onclick="show('about')">⚖️ Hakkımızda</div>
 
-<input id="d6" type="number" placeholder="İngilizce Doğru">
-<input id="y6" type="number" placeholder="İngilizce Yanlış">
+</div>
 
-<button onclick="calc()">Hesapla</button>
+<!-- MAIN -->
+<div class="main">
 
-<div class="result" id="res"></div>
-<div class="small" id="det"></div>
+<!-- HOME -->
+<div class="page active" id="home">
+
+<h2>Hoşgeldin</h2>
+
+<p class="small">
+Bu sistem 3 ana eğitim içerir: Python, Web ve Siber Güvenlik (Kali Linux).  
+Tüm içerikler sadece <b>yasal eğitim</b> amaçlıdır.
+</p>
+
+</div>
+
+<!-- PYTHON -->
+<div class="page" id="python">
+<h2>🐍 Python Dersleri</h2>
+
+<div class="item">Değişkenler</div>
+<div class="item">If / Else</div>
+<div class="item">Döngüler</div>
+<div class="item">Fonksiyonlar</div>
+<div class="item">Mini Projeler</div>
+
+</div>
+
+<!-- WEB -->
+<div class="page" id="web">
+<h2>🌐 Web Geliştirme</h2>
+
+<div class="item">HTML Temel</div>
+<div class="item">CSS Tasarım</div>
+<div class="item">JavaScript</div>
+<div class="item">DOM</div>
+<div class="item">Mini Web Projeleri</div>
+
+</div>
+
+<!-- LINUX -->
+<div class="page" id="linux">
+<h2>🐧 Kali Linux / Siber Güvenlik</h2>
+
+<div class="item">Linux Temel Komutlar</div>
+<div class="item">Network Mantığı</div>
+<div class="item">Şifreleme Temelleri</div>
+<div class="item">CTF Görevleri</div>
+<div class="item">Savunma Teknikleri</div>
 
 </div>
 
 <!-- ABOUT -->
-<div class="content">
+<div class="page" id="about">
 
-<h2>Hakkımızda</h2>
-
-<p style="line-height:1.6;">
-Bu LGS hesaplama aracı öğrencilerin net ve puan hesaplamasını kolaylaştırmak için hazırlanmıştır.
-</p>
+<h2>⚖️ Hakkımızda</h2>
 
 <p class="small">
-Geliştirici: Yuşa Çiloğlan
+Bu site <b>Yuşa Çiloğlan</b> ve ekibi tarafından geliştirilmiştir.  
+Amacı tamamen <b>yasal yollarla yazılım eğitimi</b>, kodlama öğretimi ve siber güvenlik farkındalığı sağlamaktır.  
+Herhangi bir yasa dışı faaliyet desteklenmez veya öğretilmez.
 </p>
 
 </div>
 
+</div>
 </div>
 
 <script>
 
-/* TAB SYSTEM */
-function openTab(i){
-
-let tabs = document.querySelectorAll(".tab")
-let contents = document.querySelectorAll(".content")
-
-tabs.forEach(t=>t.classList.remove("active"))
-contents.forEach(c=>c.classList.remove("active"))
-
-tabs[i].classList.add("active")
-contents[i].classList.add("active")
-
+function enter(){
+document.getElementById("gate").style.display="none"
+document.getElementById("app").style.display="flex"
 }
 
-/* NET HESAP */
-function net(d,y){
-return (Number(d)||0) - (Number(y)||0)/4
-}
-
-function calc(){
-
-let totalNet =
-net(d1.value,y1.value)+
-net(d2.value,y2.value)+
-net(d3.value,y3.value)+
-net(d4.value,y4.value)+
-net(d5.value,y5.value)+
-net(d6.value,y6.value)
-
-/* LGS puan benzeri ölçek */
-let puan = 100 + totalNet * 8.5
-
-res.innerHTML =
-"LGS Puan: " + puan.toFixed(2)
-
-det.innerHTML =
-"Toplam Net: " + totalNet.toFixed(2)
-
-localStorage.setItem("lgs_last", puan)
-
-}
-
-/* LAST SCORE */
-window.onload=()=>{
-let last = localStorage.getItem("lgs_last")
-if(last){
-res.innerHTML = "Son LGS: " + Number(last).toFixed(2)
-}
+function show(id){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+document.getElementById(id).classList.add("active")
 }
 
 </script>
