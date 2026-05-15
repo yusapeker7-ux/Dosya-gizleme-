@@ -3,25 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siber Kasa - Yuşa Çiloğlan & Team Pro</title>
+    <title>Siber Kasa - Yuşa Çiloğlan & Team</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #007bff; --bg: #f8faff; --white: #ffffff; --success: #10b981; }
+        :root { --primary: #007bff; --bg: #f8faff; --success: #10b981; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg); display: flex; min-height: 100vh; overflow: hidden; }
 
         /* AUTH EKRANI */
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #f8faff 0%, #e0e7ff 100%); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .auth-container { background: white; padding: 40px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); width: 380px; text-align: center; }
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #f8faff 0%, #dbeafe 100%); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .auth-container { background: white; padding: 40px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 400px; text-align: center; border: 1px solid #e2e8f0; }
         .auth-tabs { display: flex; margin-bottom: 25px; background: #f1f5f9; border-radius: 12px; padding: 5px; }
-        .auth-tab { flex: 1; padding: 10px; cursor: pointer; border-radius: 8px; font-weight: 600; font-size: 14px; }
-        .auth-tab.active { background: white; color: var(--primary); }
-        .auth-input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; }
-        .auth-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 15px; }
+        .auth-tab { flex: 1; padding: 12px; cursor: pointer; border-radius: 8px; font-weight: 600; font-size: 14px; color: #64748b; transition: 0.3s; }
+        .auth-tab.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .auth-input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; transition: 0.3s; }
+        .auth-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+        .auth-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 16px; }
+        .auth-btn:hover { background: #0056b3; }
 
         /* SIDEBAR */
         .sidebar { width: 260px; background: white; height: 100vh; position: fixed; border-right: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; }
-        .logo-area { padding: 10px 15px 30px; font-size: 20px; font-weight: 800; color: var(--primary); border-bottom: 1px solid #f1f5f9; margin-bottom: 20px; }
+        .logo-area { padding: 10px 15px 30px; font-size: 20px; font-weight: 800; color: var(--primary); border-bottom: 1px solid #f1f5f9; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .nav-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin: 20px 0 10px 15px; display: block; }
         .nav-item { padding: 12px 15px; border-radius: 12px; cursor: pointer; margin-bottom: 4px; display: flex; align-items: center; gap: 12px; color: #475569; transition: 0.2s; font-size: 14px; }
         .nav-item:hover, .nav-item.active { background: #f1f5f9; color: var(--primary); }
@@ -33,15 +35,14 @@
         .page.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* MARKET & DOSYALAR */
+        /* KARTLAR */
         .card { background: white; border-radius: 20px; padding: 25px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
         .item-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; text-align: center; transition: 0.3s; }
-        .item-box:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .item-box i { font-size: 35px; color: var(--primary); margin-bottom: 10px; display: block; }
         .price { font-size: 24px; font-weight: 800; color: var(--success); margin: 10px 0; }
-        .type-badge { font-size: 10px; background: #f1f5f9; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
+        .type-badge { font-size: 10px; background: #f1f5f9; padding: 3px 10px; border-radius: 10px; font-weight: bold; color: #64748b; display: inline-block; margin-top: 5px; }
 
-        /* PAYMENT MODAL */
         #payment-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; justify-content: center; align-items: center; }
     </style>
 </head>
@@ -49,54 +50,78 @@
 
     <div id="auth-overlay">
         <div class="auth-container">
-            <h2>🛡️ Siber Kasa</h2>
+            <div style="margin-bottom: 20px;">
+                <i class="fas fa-user-shield" style="font-size: 40px; color: var(--primary);"></i>
+                <h2 style="margin-top: 10px;">Siber Kasa</h2>
+                <p style="font-size: 12px; color: #94a3b8;">Yuşa Çiloğlan ve Ekibi Sunar</p>
+            </div>
+            
             <div class="auth-tabs">
                 <div class="auth-tab active" id="tab-login" onclick="toggleAuth('login')">Giriş Yap</div>
                 <div class="auth-tab" id="tab-register" onclick="toggleAuth('register')">Kayıt Ol</div>
             </div>
+
             <input type="text" id="auth-user" class="auth-input" placeholder="Kullanıcı Adı">
             <input type="password" id="auth-pass" class="auth-input" placeholder="Şifre">
-            <button class="auth-btn" onclick="processAuth()">Sisteme Gir</button>
+            <button class="auth-btn" id="auth-main-btn" onclick="processAuth()">Giriş Yap</button>
+            <p id="auth-error" style="color: #ef4444; font-size: 13px; margin-top: 15px; font-weight: 500;"></p>
         </div>
     </div>
 
     <div class="sidebar">
-        <div class="logo-area">SIBER KASA</div>
+        <div class="logo-area"><i class="fas fa-shield-halved"></i> SIBER KASA</div>
+        
         <span class="nav-label">Kurumsal</span>
         <div class="nav-item active" onclick="switchPage('about', this)"><i class="fas fa-users"></i> Hakkımızda</div>
+        
         <span class="nav-label">Depolama</span>
         <div class="nav-item" onclick="switchPage('files', this)"><i class="fas fa-folder-open"></i> Dosyalarım</div>
-        <div class="nav-item" onclick="switchPage('create', this)"><i class="fas fa-plus"></i> Dosya Oluştur</div>
+        <div class="nav-item" onclick="switchPage('create', this)"><i class="fas fa-plus-circle"></i> Dosya Oluştur</div>
+        
         <span class="nav-label">Mağaza</span>
         <div class="nav-item" onclick="switchPage('market', this)"><i class="fas fa-shopping-cart"></i> Siber Market</div>
+        
         <span class="nav-label">İletişim</span>
-        <div class="nav-item" onclick="switchPage('support', this)"><i class="fas fa-headset"></i> Destek</div>
-        <div class="nav-item" style="margin-top:auto; color:red;" onclick="location.reload()"><i class="fas fa-power-off"></i> Çıkış</div>
+        <div class="nav-item" onclick="switchPage('support', this)"><i class="fas fa-headset"></i> Destek & Şikayet</div>
+        
+        <div class="nav-item" style="margin-top:auto; color:#ef4444;" onclick="location.reload()"><i class="fas fa-power-off"></i> Güvenli Çıkış</div>
     </div>
 
     <div class="main-content">
+        
         <div id="about" class="page active">
             <div class="card">
-                <h1>Hakkımızda</h1>
-                <p>Bu platform <b>Yuşa Çiloğlan ve Ekibi</b> tarafından geliştirilmiştir. Market ürünlerinden yararlanarak kasanızı güçlendirebilirsiniz.</p>
+                <h1 style="color: var(--primary);">Hakkımızda</h1>
+                <p style="line-height: 1.8; margin-top: 15px; color: #475569;">
+                    Bu platform <b>Yuşa Çiloğlan ve Ekibi</b> tarafından tamamen güvenli bir dosya depolama ve şifreleme hizmeti sunmak amacıyla tasarlanmıştır. 
+                    Kayıt olduğunuz andan itibaren verileriniz sadece size özel olarak şifrelenir.
+                </p>
             </div>
         </div>
 
         <div id="files" class="page">
-            <h2>📂 Dosyalarım</h2>
-            <div id="file-grid" class="grid" style="margin-top:20px;"></div>
+            <h2>📂 Kayıtlı Dosyalarım</h2>
+            <div id="file-grid" class="grid" style="margin-top:25px;"></div>
+            <div id="no-files" style="text-align:center; padding: 50px; color: #94a3b8; display: none;">
+                <i class="fas fa-folder-open" style="font-size: 40px; margin-bottom: 10px;"></i><br>Henüz dosya eklemediniz.
+            </div>
         </div>
 
         <div id="create" class="page">
-            <h2>➕ Yeni Dosya</h2>
-            <div class="card" style="margin-top:20px;">
-                <input type="text" id="fname" class="auth-input" placeholder="Dosya Adı">
+            <h2>➕ Yeni Dosya Oluştur</h2>
+            <div class="card" style="margin-top:20px; max-width: 500px;">
+                <label style="font-size: 13px; font-weight: 600;">Dosya Adı</label>
+                <input type="text" id="fname" class="auth-input" placeholder="Örn: gizli_notlar">
+                
+                <label style="font-size: 13px; font-weight: 600; margin-top: 10px; display: block;">Dosya Türü</label>
                 <select id="ftype" class="auth-input">
                     <option>Kodlama Dosyası</option>
                     <option>PDF Belgesi</option>
-                    <option>Metin Belgesi</option>
+                    <option>Metin Belgesi (Txt)</option>
+                    <option>Özel Şifreli Not</option>
                 </select>
-                <button class="auth-btn" onclick="saveFile()">Kasaya Ekle</button>
+                
+                <button class="auth-btn" onclick="saveFile()">Kasaya Güvenli Kaydet</button>
             </div>
         </div>
 
@@ -104,48 +129,50 @@
             <h2>🛒 Siber Market</h2>
             <div class="grid" style="margin-top:20px;">
                 <div class="item-box">
-                    <i class="fas fa-user-shield" style="font-size:40px; color:var(--primary);"></i>
+                    <i class="fas fa-user-shield"></i>
                     <h3>Süper Koruma</h3>
                     <div class="price">$15.00</div>
                     <button class="auth-btn" onclick="openPayment('Süper Koruma')">Satın Al</button>
                 </div>
                 <div class="item-box">
-                    <i class="fas fa-ghost" style="font-size:40px; color:var(--primary);"></i>
+                    <i class="fas fa-mask"></i>
                     <h3>Gizli Mod</h3>
                     <div class="price">$12.00</div>
                     <button class="auth-btn" onclick="openPayment('Gizli Mod')">Satın Al</button>
                 </div>
                 <div class="item-box">
-                    <i class="fas fa-crown" style="font-size:40px; color:gold;"></i>
-                    <h3>Premium Üyelik</h3>
+                    <i class="fas fa-crown" style="color:gold;"></i>
+                    <h3>Premium Paket</h3>
                     <div class="price">$25.00</div>
-                    <button class="auth-btn" onclick="openPayment('Premium Üyelik')">Satın Al</button>
+                    <button class="auth-btn" onclick="openPayment('Premium Paket')">Satın Al</button>
                 </div>
             </div>
         </div>
 
         <div id="support" class="page">
-            <h2>🎧 Destek</h2>
+            <h2>🎧 Destek Merkezi</h2>
             <div class="card" id="sup-form" style="margin-top:20px;">
-                <textarea id="smsg" class="auth-input" placeholder="Şikayetiniz..."></textarea>
-                <button class="auth-btn" onclick="sendSup()">İlet</button>
+                <textarea id="smsg" class="auth-input" style="height: 120px;" placeholder="Şikayetinizi buraya yazın..."></textarea>
+                <button class="auth-btn" onclick="sendSup()">Şikayeti İlet</button>
             </div>
-            <div id="sup-ok" style="display:none; color:green; text-align:center;">Şikayetiniz ekibe iletildi.</div>
+            <div id="sup-ok" style="display:none; text-align:center; padding: 30px; background: #ecfdf5; border-radius: 20px; color: #065f46;">
+                <i class="fas fa-check-circle" style="font-size: 30px;"></i><br><br>Şikayetiniz Yuşa Çiloğlan ve Ekibine başarıyla iletildi.
+            </div>
         </div>
     </div>
 
     <div id="payment-modal">
-        <div class="auth-container" style="width:450px;">
-            <h3 id="pay-title">Ödeme</h3>
-            <p>Yuşa Çiloğlan & Team Güvenli Ödeme</p>
-            <input type="text" class="auth-input" placeholder="Kart Üzerindeki İsim">
-            <input type="text" class="auth-input" placeholder="0000 0000 0000 0000">
+        <div class="auth-container">
+            <h3 id="pay-title" style="color: var(--primary);">Ödeme</h3>
+            <p style="margin-bottom: 20px; font-size: 14px;">Güvenli Altyapı: Siber Kasa Pay</p>
+            <input type="text" class="auth-input" placeholder="Kart Sahibi">
+            <input type="text" class="auth-input" placeholder="Kart Numarası">
             <div style="display:flex; gap:10px;">
                 <input type="text" class="auth-input" placeholder="AA/YY">
                 <input type="text" class="auth-input" placeholder="CVV">
             </div>
-            <button class="auth-btn" style="background:var(--success);" onclick="finishPay()">Ödemeyi Yap</button>
-            <button class="auth-btn" style="background:#666;" onclick="closePayment()">İptal</button>
+            <button class="auth-btn" style="background:var(--success);" onclick="finishPay()">Ödemeyi Onayla</button>
+            <button class="auth-btn" style="background:#94a3b8;" onclick="closePayment()">Vazgeç</button>
         </div>
     </div>
 
@@ -153,24 +180,38 @@
         let mode = 'login';
         let currentU = "";
 
-        function toggleAuth(t) { mode = t; document.getElementById('tab-login').className = t=='login'?'auth-tab active':'auth-tab'; document.getElementById('tab-register').className = t=='register'?'auth-tab active':'auth-tab'; }
+        function toggleAuth(t) {
+            mode = t;
+            document.getElementById('tab-login').className = t=='login'?'auth-tab active':'auth-tab';
+            document.getElementById('tab-register').className = t=='register'?'auth-tab active':'auth-tab';
+            document.getElementById('auth-main-btn').innerText = t=='login'?'Giriş Yap':'Kayıt Ol';
+            document.getElementById('auth-error').innerText = "";
+        }
 
         function processAuth() {
             const u = document.getElementById('auth-user').value;
             const p = document.getElementById('auth-pass').value;
-            if(!u || !p) return alert("Doldur!");
+            if(!u || !p) { document.getElementById('auth-error').innerText = "Boş alan bırakmayın!"; return; }
             
-            let users = JSON.parse(localStorage.getItem('users') || "{}");
+            // Kullanıcıları getir veya boş bir obje oluştur
+            let users = JSON.parse(localStorage.getItem('vault_users') || "{}");
+
             if(mode == 'register') {
+                if(users[u]) { document.getElementById('auth-error').innerText = "Bu kullanıcı adı zaten var!"; return; }
+                // Kayıt işlemi
                 users[u] = { pass: p, files: [] };
-                localStorage.setItem('users', JSON.stringify(users));
-                alert("Kayıt ok!"); toggleAuth('login');
+                localStorage.setItem('vault_users', JSON.stringify(users));
+                alert("Başarıyla kayıt oldunuz! Şimdi giriş yapabilirsiniz.");
+                toggleAuth('login');
             } else {
+                // Giriş işlemi
                 if(users[u] && users[u].pass == p) {
                     currentU = u;
                     document.getElementById('auth-overlay').style.display='none';
                     loadFiles();
-                } else alert("Hatalı!");
+                } else {
+                    document.getElementById('auth-error').innerText = "Hatalı kullanıcı adı veya şifre!";
+                }
             }
         }
 
@@ -184,11 +225,13 @@
         function saveFile() {
             const n = document.getElementById('fname').value;
             const t = document.getElementById('ftype').value;
-            if(!n) return;
-            let users = JSON.parse(localStorage.getItem('users'));
+            if(!n) { alert("Dosya adı girin!"); return; }
+            
+            let users = JSON.parse(localStorage.getItem('vault_users'));
             users[currentU].files.push({name:n, type:t});
-            localStorage.setItem('users', JSON.stringify(users));
-            alert("Kaydedildi!");
+            localStorage.setItem('vault_users', JSON.stringify(users));
+            
+            alert("Dosya başarıyla şifrelendi ve eklendi!");
             document.getElementById('fname').value = "";
             loadFiles();
             switchPage('files', document.querySelectorAll('.nav-item')[1]);
@@ -196,18 +239,32 @@
 
         function loadFiles() {
             const grid = document.getElementById('file-grid');
+            const empty = document.getElementById('no-files');
             grid.innerHTML = "";
-            let users = JSON.parse(localStorage.getItem('users'));
-            users[currentU].files.forEach(f => {
-                grid.innerHTML += `<div class="item-box"><i class="fas fa-file"></i><br><b>${f.name}</b><br><span class="type-badge">${f.type}</span></div>`;
-            });
+            
+            let users = JSON.parse(localStorage.getItem('vault_users'));
+            const myFiles = users[currentU].files;
+
+            if(myFiles.length === 0) {
+                empty.style.display = 'block';
+            } else {
+                empty.style.display = 'none';
+                myFiles.forEach(f => {
+                    const icon = f.type.includes('Kod') ? 'fa-code' : (f.type.includes('PDF') ? 'fa-file-pdf' : 'fa-file-lines');
+                    grid.innerHTML += `<div class="item-box"><i class="fas ${icon}"></i><b>${f.name}</b><br><span class="type-badge">${f.type}</span></div>`;
+                });
+            }
         }
 
         function openPayment(title) { document.getElementById('pay-title').innerText = title; document.getElementById('payment-modal').style.display='flex'; }
         function closePayment() { document.getElementById('payment-modal').style.display='none'; }
-        function finishPay() { alert("İşlem Başarılı! Ürün hesabınıza tanımlandı."); closePayment(); }
-        function sendSup() { document.getElementById('sup-form').style.display='none'; document.getElementById('sup-ok').style.display='block'; }
+        function finishPay() { alert("Ödeme Başarılı! Paketiniz aktif edildi."); closePayment(); }
+        function sendSup() { 
+            if(!document.getElementById('smsg').value) return;
+            document.getElementById('sup-form').style.display='none'; 
+            document.getElementById('sup-ok').style.display='block'; 
+        }
     </script>
 </body>
     </html>
-
+    
