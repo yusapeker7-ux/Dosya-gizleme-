@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Siber Akademi</title>
+<title>Siber Akademi 2.0</title>
 
 <style>
 body{
@@ -14,7 +14,7 @@ color:white;
 display:flex;
 }
 
-/* sidebar */
+/* SIDEBAR */
 .sidebar{
 width:240px;
 background:#0f172a;
@@ -31,16 +31,20 @@ border-radius:10px;
 cursor:pointer;
 }
 
-.menu:hover{
-background:#1f2937;
-}
+.menu:hover{background:#1f2937}
 
-/* main */
+/* MAIN */
 .main{
 flex:1;
 padding:20px;
+overflow:auto;
 }
 
+/* PAGES */
+.page{display:none}
+.page.active{display:block}
+
+/* GRID */
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
@@ -55,25 +59,38 @@ border:1px solid #1f2937;
 cursor:pointer;
 }
 
-.card:hover{
-background:#1f2937;
-}
+.card:hover{background:#1f2937}
 
-.viewer{
-margin-top:20px;
+/* VIEWER */
+.box{
+margin-top:15px;
+padding:15px;
 background:#0f172a;
-padding:20px;
-border-radius:10px;
 border:1px solid #1f2937;
+border-radius:10px;
 display:none;
 }
 
-h2{color:#60a5fa}
+/* EDITOR */
+textarea{
+width:100%;
+height:200px;
+background:#0f172a;
+color:#00ff99;
+border:1px solid #1f2937;
+border-radius:10px;
+padding:10px;
+}
 
-.warn{
-font-size:12px;
-color:#9ca3af;
-margin-bottom:10px;
+/* BUTTON */
+button{
+margin-top:10px;
+padding:10px;
+border:none;
+border-radius:8px;
+background:#2563eb;
+color:white;
+cursor:pointer;
 }
 </style>
 </head>
@@ -85,66 +102,86 @@ margin-bottom:10px;
 
 <h3>Siber Akademi</h3>
 
-<div class="menu" onclick="showHome()">📚 Dersler</div>
-<div class="menu" onclick="showAbout()">⚖️ Hakkımızda</div>
+<div class="menu" onclick="show('home')">📚 PDF Dersler</div>
+<div class="menu" onclick="show('editor')">💻 Kod Editör</div>
+<div class="menu" onclick="show('ctf')">🧪 CTF Lab</div>
+<div class="menu" onclick="show('exam')">📝 Deneme</div>
+<div class="menu" onclick="show('about')">⚖️ Hakkımızda</div>
 
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-<!-- HOME -->
-<div id="home">
+<!-- PDF -->
+<div class="page active" id="home">
 
 <h2>📚 PDF Dersler</h2>
 
-<div class="warn">
-Tüm içerikler yasal yazılım ve siber güvenlik eğitimi içindir.
-</div>
-
 <div class="grid">
 
-<div class="card" onclick="openPDF(1,'Python Değişkenler')">
-📄 PDF 1 - Python Değişkenler
-</div>
-
-<div class="card" onclick="openPDF(2,'If / Else')">
-📄 PDF 2 - If / Else
-</div>
-
-<div class="card" onclick="openPDF(3,'Döngüler')">
-📄 PDF 3 - Döngüler
-</div>
-
-<div class="card" onclick="openPDF(4,'HTML Temel')">
-📄 PDF 4 - HTML Temel
-</div>
-
-<div class="card" onclick="openPDF(5,'CSS Giriş')">
-📄 PDF 5 - CSS Giriş
-</div>
-
-<div class="card" onclick="openPDF(6,'Kali Linux')">
-📄 PDF 6 - Kali Linux
-</div>
+<div class="card" onclick="openPDF(1)">PDF 1 - Python</div>
+<div class="card" onclick="openPDF(2)">PDF 2 - If Else</div>
+<div class="card" onclick="openPDF(3)">PDF 3 - Döngüler</div>
+<div class="card" onclick="openPDF(4)">PDF 4 - HTML</div>
+<div class="card" onclick="openPDF(5)">PDF 5 - CSS</div>
+<div class="card" onclick="openPDF(6)">PDF 6 - Kali Linux</div>
 
 </div>
 
-<div class="viewer" id="viewer">
-<h3 id="title"></h3>
-<p id="content"></p>
+<div class="box" id="pdfBox"></div>
+
 </div>
+
+<!-- EDITOR -->
+<div class="page" id="editor">
+
+<h2>💻 Kod Editör</h2>
+
+<textarea id="code"><h1>Merhaba</h1></textarea>
+
+<button onclick="run()">Çalıştır</button>
+
+<div class="box" id="out"></div>
+
+</div>
+
+<!-- CTF -->
+<div class="page" id="ctf">
+
+<h2>🧪 CTF Görevi</h2>
+
+<p>Şifreyi çöz: base64 → "SGVsbG8="</p>
+
+<input id="ans" placeholder="cevap">
+<button onclick="checkCTF()">Kontrol</button>
+
+<p id="ctfRes"></p>
+
+</div>
+
+<!-- EXAM -->
+<div class="page" id="exam">
+
+<h2>📝 Deneme</h2>
+
+<p>1) HTML ne işe yarar?</p>
+<input id="q1">
+
+<button onclick="exam()">Bitir</button>
+
+<p id="examRes"></p>
 
 </div>
 
 <!-- ABOUT -->
-<div id="about" style="display:none">
+<div class="page" id="about">
 
 <h2>⚖️ Hakkımızda</h2>
 
 <p>
-Bu platform <b>Yuşa Çiloğlan</b> ve ekibi tarafından geliştirilmiştir.  
-Amacı sadece yasal yazılım eğitimi ve siber güvenlik farkındalığı sağlamaktır.
+Bu platform <b>Yuşa Çiloğlan</b> ve ekibi tarafından hazırlanmıştır.  
+Amaç: yasal yazılım eğitimi ve siber güvenlik farkındalığıdır.
 </p>
 
 </div>
@@ -153,32 +190,41 @@ Amacı sadece yasal yazılım eğitimi ve siber güvenlik farkındalığı sağl
 
 <script>
 
-function openPDF(no,title){
-
-viewer.style.display="block"
-titleEl.innerText = "PDF " + no + " - " + title
-
-let data = {
-1:"Python değişkenler veri saklamak için kullanılır.",
-2:"If/else koşul kontrol sistemidir.",
-3:"Döngüler tekrar eden işlemler içindir.",
-4:"HTML web sayfasının iskeletidir.",
-5:"CSS tasarım için kullanılır.",
-6:"Kali Linux güvenlik ve test ortamıdır."
+function show(id){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+document.getElementById(id).classList.add("active")
 }
 
-contentEl.innerText = data[no]
+/* PDF */
+function openPDF(n){
 
+let data={
+1:"Python değişkenler veri saklar.",
+2:"If else koşul kontrol eder.",
+3:"Döngüler tekrar eder.",
+4:"HTML sayfa yapısıdır.",
+5:"CSS tasarım içindir.",
+6:"Kali Linux güvenlik sistemidir."
 }
 
-function showHome(){
-home.style.display="block"
-about.style.display="none"
+pdfBox.style.display="block"
+pdfBox.innerText="PDF "+n+" → "+data[n]
 }
 
-function showAbout(){
-home.style.display="none"
-about.style.display="block"
+/* EDITOR */
+function run(){
+out.innerHTML = code.value
+}
+
+/* CTF */
+function checkCTF(){
+let a = ans.value.trim()
+ctfRes.innerText = (a=="Hello") ? "✔ Doğru" : "❌ Yanlış"
+}
+
+/* EXAM */
+function exam(){
+examRes.innerText = "Cevap kaydedildi ✔"
 }
 
 </script>
