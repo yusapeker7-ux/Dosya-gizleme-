@@ -1,270 +1,1159 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siber Kasa - Yuşa Çiloğlan & Team</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --primary: #007bff; --bg: #f8faff; --success: #10b981; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg); display: flex; min-height: 100vh; overflow: hidden; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        /* AUTH EKRANI */
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #f8faff 0%, #dbeafe 100%); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .auth-container { background: white; padding: 40px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 400px; text-align: center; border: 1px solid #e2e8f0; }
-        .auth-tabs { display: flex; margin-bottom: 25px; background: #f1f5f9; border-radius: 12px; padding: 5px; }
-        .auth-tab { flex: 1; padding: 12px; cursor: pointer; border-radius: 8px; font-weight: 600; font-size: 14px; color: #64748b; transition: 0.3s; }
-        .auth-tab.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .auth-input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; transition: 0.3s; }
-        .auth-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
-        .auth-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 16px; }
-        .auth-btn:hover { background: #0056b3; }
+<title>Siber Kasa Ultimate</title>
 
-        /* SIDEBAR */
-        .sidebar { width: 260px; background: white; height: 100vh; position: fixed; border-right: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; }
-        .logo-area { padding: 10px 15px 30px; font-size: 20px; font-weight: 800; color: var(--primary); border-bottom: 1px solid #f1f5f9; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .nav-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin: 20px 0 10px 15px; display: block; }
-        .nav-item { padding: 12px 15px; border-radius: 12px; cursor: pointer; margin-bottom: 4px; display: flex; align-items: center; gap: 12px; color: #475569; transition: 0.2s; font-size: 14px; }
-        .nav-item:hover, .nav-item.active { background: #f1f5f9; color: var(--primary); }
-        .nav-item.active { background: #eef2ff; font-weight: 600; }
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-        /* CONTENT */
-        .main-content { margin-left: 260px; flex: 1; padding: 40px; overflow-y: auto; height: 100vh; }
-        .page { display: none; animation: slideUp 0.4s; }
-        .page.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+<style>
 
-        /* KARTLAR */
-        .card { background: white; border-radius: 20px; padding: 25px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .item-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; text-align: center; transition: 0.3s; }
-        .item-box i { font-size: 35px; color: var(--primary); margin-bottom: 10px; display: block; }
-        .price { font-size: 24px; font-weight: 800; color: var(--success); margin: 10px 0; }
-        .type-badge { font-size: 10px; background: #f1f5f9; padding: 3px 10px; border-radius: 10px; font-weight: bold; color: #64748b; display: inline-block; margin-top: 5px; }
+:root{
+    --primary:#2563eb;
+    --success:#10b981;
+    --bg:#f4f8ff;
+}
 
-        #payment-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; justify-content: center; align-items: center; }
-    </style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial;
+}
+
+body{
+    background:var(--bg);
+    display:flex;
+    min-height:100vh;
+}
+
+/* DARK MODE */
+
+.dark-mode{
+    background:#0f172a;
+    color:white;
+}
+
+.dark-mode .sidebar,
+.dark-mode .card,
+.dark-mode .item-box{
+    background:#1e293b;
+    color:white;
+}
+
+/* LOGIN */
+
+#auth-overlay{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#dbeafe,#eff6ff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.auth-box{
+    width:400px;
+    background:white;
+    padding:35px;
+    border-radius:20px;
+}
+
+.auth-input{
+    width:100%;
+    padding:14px;
+    margin-top:12px;
+    border-radius:12px;
+    border:1px solid #dbeafe;
+}
+
+.auth-btn{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+    border:none;
+    background:var(--primary);
+    color:white;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.tabs{
+    display:flex;
+    margin-bottom:20px;
+    background:#eff6ff;
+    border-radius:10px;
+    padding:5px;
+}
+
+.tab{
+    flex:1;
+    text-align:center;
+    padding:10px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.tab.active{
+    background:white;
+    color:var(--primary);
+    font-weight:bold;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:260px;
+    background:white;
+    padding:20px;
+    border-right:1px solid #ddd;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+    color:var(--primary);
+    margin-bottom:30px;
+}
+
+.nav-item{
+    padding:14px;
+    border-radius:12px;
+    margin-bottom:10px;
+    cursor:pointer;
+}
+
+.nav-item:hover{
+    background:#eff6ff;
+}
+
+.nav-item.active{
+    background:#dbeafe;
+}
+
+/* CONTENT */
+
+.main{
+    flex:1;
+    padding:40px;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    margin-top:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:20px;
+    margin-top:20px;
+}
+
+.item-box{
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    text-align:center;
+}
+
+.item-box i{
+    font-size:40px;
+    color:var(--primary);
+    margin-bottom:10px;
+}
+
+.price{
+    font-size:26px;
+    color:var(--success);
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.type{
+    background:#eff6ff;
+    padding:4px 10px;
+    border-radius:10px;
+    font-size:12px;
+    display:inline-block;
+    margin-top:10px;
+}
+
+</style>
 </head>
+
 <body>
 
-    <div id="auth-overlay">
-        <div class="auth-container">
-            <div style="margin-bottom: 20px;">
-                <i class="fas fa-user-shield" style="font-size: 40px; color: var(--primary);"></i>
-                <h2 style="margin-top: 10px;">Siber Kasa</h2>
-                <p style="font-size: 12px; color: #94a3b8;">Yuşa Çiloğlan ve Ekibi Sunar</p>
-            </div>
-            
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="tab-login" onclick="toggleAuth('login')">Giriş Yap</div>
-                <div class="auth-tab" id="tab-register" onclick="toggleAuth('register')">Kayıt Ol</div>
+<!-- LOGIN -->
+
+<div id="auth-overlay">
+
+    <div class="auth-box">
+
+        <h1 style="text-align:center;color:#2563eb;">
+            Siber Kasa
+        </h1>
+
+        <div class="tabs">
+
+            <div class="tab active"
+            id="login-tab"
+            onclick="changeTab('login')">
+
+            Giriş
+
             </div>
 
-            <input type="text" id="auth-user" class="auth-input" placeholder="Kullanıcı Adı">
-            <input type="password" id="auth-pass" class="auth-input" placeholder="Şifre">
-            <button class="auth-btn" id="auth-main-btn" onclick="processAuth()">Giriş Yap</button>
-            <p id="auth-error" style="color: #ef4444; font-size: 13px; margin-top: 15px; font-weight: 500;"></p>
+            <div class="tab"
+            id="register-tab"
+            onclick="changeTab('register')">
+
+            Kayıt
+
+            </div>
+
         </div>
+
+        <input type="text"
+        id="username"
+        class="auth-input"
+        placeholder="Kullanıcı adı">
+
+        <input type="password"
+        id="password"
+        class="auth-input"
+        placeholder="Şifre">
+
+        <button class="auth-btn"
+        id="main-btn"
+        onclick="processAuth()">
+
+        Giriş Yap
+
+        </button>
+
+        <p id="auth-error"
+        style="margin-top:15px;color:red;text-align:center;">
+        </p>
+
     </div>
 
-    <div class="sidebar">
-        <div class="logo-area"><i class="fas fa-shield-halved"></i> SIBER KASA</div>
-        
-        <span class="nav-label">Kurumsal</span>
-        <div class="nav-item active" onclick="switchPage('about', this)"><i class="fas fa-users"></i> Hakkımızda</div>
-        
-        <span class="nav-label">Depolama</span>
-        <div class="nav-item" onclick="switchPage('files', this)"><i class="fas fa-folder-open"></i> Dosyalarım</div>
-        <div class="nav-item" onclick="switchPage('create', this)"><i class="fas fa-plus-circle"></i> Dosya Oluştur</div>
-        
-        <span class="nav-label">Mağaza</span>
-        <div class="nav-item" onclick="switchPage('market', this)"><i class="fas fa-shopping-cart"></i> Siber Market</div>
-        
-        <span class="nav-label">İletişim</span>
-        <div class="nav-item" onclick="switchPage('support', this)"><i class="fas fa-headset"></i> Destek & Şikayet</div>
-        
-        <div class="nav-item" style="margin-top:auto; color:#ef4444;" onclick="location.reload()"><i class="fas fa-power-off"></i> Güvenli Çıkış</div>
+</div>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <div class="logo">
+        <i class="fas fa-shield-halved"></i>
+        Siber Kasa
     </div>
 
-    <div class="main-content">
-        
-        <div id="about" class="page active">
-            <div class="card">
-                <h1 style="color: var(--primary);">Hakkımızda</h1>
-                <p style="line-height: 1.8; margin-top: 15px; color: #475569;">
-                    Bu platform <b>Yuşa Çiloğlan ve Ekibi</b> tarafından tamamen güvenli bir dosya depolama ve şifreleme hizmeti sunmak amacıyla tasarlanmıştır. 
-                    Kayıt olduğunuz andan itibaren verileriniz sadece size özel olarak şifrelenir.
-                </p>
-            </div>
-        </div>
-
-        <div id="files" class="page">
-            <h2>📂 Kayıtlı Dosyalarım</h2>
-            <div id="file-grid" class="grid" style="margin-top:25px;"></div>
-            <div id="no-files" style="text-align:center; padding: 50px; color: #94a3b8; display: none;">
-                <i class="fas fa-folder-open" style="font-size: 40px; margin-bottom: 10px;"></i><br>Henüz dosya eklemediniz.
-            </div>
-        </div>
-
-        <div id="create" class="page">
-            <h2>➕ Yeni Dosya Oluştur</h2>
-            <div class="card" style="margin-top:20px; max-width: 500px;">
-                <label style="font-size: 13px; font-weight: 600;">Dosya Adı</label>
-                <input type="text" id="fname" class="auth-input" placeholder="Örn: gizli_notlar">
-                
-                <label style="font-size: 13px; font-weight: 600; margin-top: 10px; display: block;">Dosya Türü</label>
-                <select id="ftype" class="auth-input">
-                    <option>Kodlama Dosyası</option>
-                    <option>PDF Belgesi</option>
-                    <option>Metin Belgesi (Txt)</option>
-                    <option>Özel Şifreli Not</option>
-                </select>
-                
-                <button class="auth-btn" onclick="saveFile()">Kasaya Güvenli Kaydet</button>
-            </div>
-        </div>
-
-        <div id="market" class="page">
-            <h2>🛒 Siber Market</h2>
-            <div class="grid" style="margin-top:20px;">
-                <div class="item-box">
-                    <i class="fas fa-user-shield"></i>
-                    <h3>Süper Koruma</h3>
-                    <div class="price">$15.00</div>
-                    <button class="auth-btn" onclick="openPayment('Süper Koruma')">Satın Al</button>
-                </div>
-                <div class="item-box">
-                    <i class="fas fa-mask"></i>
-                    <h3>Gizli Mod</h3>
-                    <div class="price">$12.00</div>
-                    <button class="auth-btn" onclick="openPayment('Gizli Mod')">Satın Al</button>
-                </div>
-                <div class="item-box">
-                    <i class="fas fa-crown" style="color:gold;"></i>
-                    <h3>Premium Paket</h3>
-                    <div class="price">$25.00</div>
-                    <button class="auth-btn" onclick="openPayment('Premium Paket')">Satın Al</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="support" class="page">
-            <h2>🎧 Destek Merkezi</h2>
-            <div class="card" id="sup-form" style="margin-top:20px;">
-                <textarea id="smsg" class="auth-input" style="height: 120px;" placeholder="Şikayetinizi buraya yazın..."></textarea>
-                <button class="auth-btn" onclick="sendSup()">Şikayeti İlet</button>
-            </div>
-            <div id="sup-ok" style="display:none; text-align:center; padding: 30px; background: #ecfdf5; border-radius: 20px; color: #065f46;">
-                <i class="fas fa-check-circle" style="font-size: 30px;"></i><br><br>Şikayetiniz Yuşa Çiloğlan ve Ekibine başarıyla iletildi.
-            </div>
-        </div>
+    <div class="nav-item active"
+    onclick="switchPage('home',this)">
+    Ana Sayfa
     </div>
 
-    <div id="payment-modal">
-        <div class="auth-container">
-            <h3 id="pay-title" style="color: var(--primary);">Ödeme</h3>
-            <p style="margin-bottom: 20px; font-size: 14px;">Güvenli Altyapı: Siber Kasa Pay</p>
-            <input type="text" class="auth-input" placeholder="Kart Sahibi">
-            <input type="text" class="auth-input" placeholder="Kart Numarası">
-            <div style="display:flex; gap:10px;">
-                <input type="text" class="auth-input" placeholder="AA/YY">
-                <input type="text" class="auth-input" placeholder="CVV">
-            </div>
-            <button class="auth-btn" style="background:var(--success);" onclick="finishPay()">Ödemeyi Onayla</button>
-            <button class="auth-btn" style="background:#94a3b8;" onclick="closePayment()">Vazgeç</button>
-        </div>
+    <div class="nav-item"
+    onclick="switchPage('create',this)">
+    Dosya Oluştur
     </div>
 
-    <script>
-        let mode = 'login';
-        let currentU = "";
+    <div class="nav-item"
+    onclick="switchPage('files',this)">
+    Dosyalarım
+    </div>
 
-        function toggleAuth(t) {
-            mode = t;
-            document.getElementById('tab-login').className = t=='login'?'auth-tab active':'auth-tab';
-            document.getElementById('tab-register').className = t=='register'?'auth-tab active':'auth-tab';
-            document.getElementById('auth-main-btn').innerText = t=='login'?'Giriş Yap':'Kayıt Ol';
-            document.getElementById('auth-error').innerText = "";
+    <div class="nav-item"
+    onclick="switchPage('market',this)">
+    Market
+    </div>
+
+    <div class="nav-item"
+    onclick="toggleDarkMode()">
+    Dark Mode
+    </div>
+
+    <div class="nav-item"
+    onclick="createFolder()">
+    Klasör Oluştur
+    </div>
+
+    <div class="nav-item"
+    onclick="logout()"
+    style="color:red;">
+    Çıkış
+    </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+    <!-- HOME -->
+
+    <div class="page active"
+    id="home">
+
+        <h1>Hoş Geldin</h1>
+
+        <div class="card">
+
+            <h3 id="premium-text">
+            Paket: FREE
+            </h3>
+
+            <br>
+
+            <button class="auth-btn"
+            onclick="notify('Bildirim sistemi aktif')">
+
+            Test Bildirimi
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- CREATE -->
+
+    <div class="page"
+    id="create">
+
+        <h1>Dosya Oluştur</h1>
+
+        <div class="card">
+
+            <input type="text"
+            id="fname"
+            class="auth-input"
+            placeholder="Dosya adı">
+
+            <select id="ftype"
+            class="auth-input"
+            onchange="changeType()">
+
+                <option value="text">
+                    Metin Dosyası
+                </option>
+
+                <option value="file">
+                    Gerçek Dosya
+                </option>
+
+            </select>
+
+            <input type="password"
+            id="fpassword"
+            class="auth-input"
+            placeholder="Dosya şifresi">
+
+            <div id="text-area">
+
+                <textarea
+                id="fcontent"
+                class="auth-input"
+                style="height:180px;"
+                placeholder="Metin yaz"></textarea>
+
+            </div>
+
+            <div id="file-area"
+            style="display:none;">
+
+                <input type="file"
+                id="real-file"
+                class="auth-input">
+
+            </div>
+
+            <button class="auth-btn"
+            onclick="saveFile()">
+
+            Kaydet
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- FILES -->
+
+    <div class="page"
+    id="files">
+
+        <h1>Dosyalarım</h1>
+
+        <input type="text"
+        id="search"
+        class="auth-input"
+        placeholder="Dosya ara"
+        onkeyup="searchFiles()">
+
+        <div id="file-grid"
+        class="grid"></div>
+
+    </div>
+
+    <!-- MARKET -->
+
+    <div class="page"
+    id="market">
+
+        <h1>Market</h1>
+
+        <div class="grid">
+
+            <div class="item-box">
+                <i class="fas fa-shield"></i>
+                <h3>Süper Koruma</h3>
+                <div class="price">$15</div>
+
+                <button class="auth-btn"
+                onclick="buyPremium('Süper Koruma')">
+
+                Satın Al
+
+                </button>
+            </div>
+
+            <div class="item-box">
+                <i class="fas fa-lock"></i>
+                <h3>Üst Düzey Koruma</h3>
+                <div class="price">$40</div>
+
+                <button class="auth-btn"
+                onclick="buyPremium('Üst Düzey Koruma')">
+
+                Satın Al
+
+                </button>
+            </div>
+
+            <div class="item-box">
+                <i class="fas fa-crown"></i>
+                <h3>Ultra Security Elite</h3>
+                <div class="price">$100</div>
+
+                <button class="auth-btn"
+                onclick="buyPremium('Ultra Security Elite')">
+
+                Satın Al
+
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================
+GENEL
+========================= */
+
+let mode = "login";
+let currentUser = "";
+
+/* =========================
+ANTI F12
+========================= */
+
+document.onkeydown = function(e){
+
+    if(e.keyCode == 123){
+        return false;
+    }
+
+    if(
+        e.ctrlKey &&
+        e.shiftKey &&
+        e.keyCode == 'I'.charCodeAt(0)
+    ){
+        return false;
+    }
+}
+
+/* =========================
+SAĞ TIK KAPAT
+========================= */
+
+document.addEventListener(
+'contextmenu',
+event => event.preventDefault()
+);
+
+/* =========================
+TAB
+========================= */
+
+function changeTab(type){
+
+    mode = type;
+
+    if(type === "login"){
+
+        login-tab.classList.add("active");
+        register-tab.classList.remove("active");
+
+        main-btn.innerText = "Giriş Yap";
+
+    }else{
+
+        register-tab.classList.add("active");
+        login-tab.classList.remove("active");
+
+        main-btn.innerText = "Kayıt Ol";
+    }
+}
+
+/* =========================
+AUTH
+========================= */
+
+function processAuth(){
+
+    const username =
+    document.getElementById("username").value;
+
+    const password =
+    document.getElementById("password").value;
+
+    let users =
+    JSON.parse(
+        localStorage.getItem("vault_users")
+        || "{}"
+    );
+
+    if(mode === "register"){
+
+        if(users[username]){
+
+            auth-error.innerText =
+            "Bu kullanıcı var";
+
+            return;
         }
 
-        function processAuth() {
-            const u = document.getElementById('auth-user').value;
-            const p = document.getElementById('auth-pass').value;
-            if(!u || !p) { document.getElementById('auth-error').innerText = "Boş alan bırakmayın!"; return; }
-            
-            // Kullanıcıları getir veya boş bir obje oluştur
-            let users = JSON.parse(localStorage.getItem('vault_users') || "{}");
+        users[username] = {
 
-            if(mode == 'register') {
-                if(users[u]) { document.getElementById('auth-error').innerText = "Bu kullanıcı adı zaten var!"; return; }
-                // Kayıt işlemi
-                users[u] = { pass: p, files: [] };
-                localStorage.setItem('vault_users', JSON.stringify(users));
-                alert("Başarıyla kayıt oldunuz! Şimdi giriş yapabilirsiniz.");
-                toggleAuth('login');
-            } else {
-                // Giriş işlemi
-                if(users[u] && users[u].pass == p) {
-                    currentU = u;
-                    document.getElementById('auth-overlay').style.display='none';
-                    loadFiles();
-                } else {
-                    document.getElementById('auth-error').innerText = "Hatalı kullanıcı adı veya şifre!";
-                }
+            password:password,
+
+            premium:"FREE",
+
+            files:[],
+
+            folders:[],
+
+            profile:{
+                xp:0,
+                level:1,
+                badge:"Yeni Üye"
             }
-        }
+        };
 
-        function switchPage(id, el) {
-            document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
-        }
+        localStorage.setItem(
+            "vault_users",
+            JSON.stringify(users)
+        );
 
-        function saveFile() {
-            const n = document.getElementById('fname').value;
-            const t = document.getElementById('ftype').value;
-            if(!n) { alert("Dosya adı girin!"); return; }
-            
-            let users = JSON.parse(localStorage.getItem('vault_users'));
-            users[currentU].files.push({name:n, type:t});
-            localStorage.setItem('vault_users', JSON.stringify(users));
-            
-            alert("Dosya başarıyla şifrelendi ve eklendi!");
-            document.getElementById('fname').value = "";
+        alert("Kayıt başarılı");
+
+        changeTab("login");
+
+    }else{
+
+        if(
+            users[username] &&
+            users[username].password === password
+        ){
+
+            currentUser = username;
+
+            localStorage.setItem(
+                "active_user",
+                username
+            );
+
+            auth-overlay.style.display = "none";
+
             loadFiles();
-            switchPage('files', document.querySelectorAll('.nav-item')[1]);
+
+            updatePremium();
+
+        }else{
+
+            auth-error.innerText =
+            "Hatalı giriş";
+        }
+    }
+}
+
+/* =========================
+OTURUM
+========================= */
+
+window.onload = function(){
+
+    const active =
+    localStorage.getItem("active_user");
+
+    if(active){
+
+        currentUser = active;
+
+        auth-overlay.style.display = "none";
+
+        loadFiles();
+
+        updatePremium();
+    }
+}
+
+/* =========================
+PAGE
+========================= */
+
+function switchPage(id,el){
+
+    document.querySelectorAll(".page")
+    .forEach(p=>p.classList.remove("active"));
+
+    document.getElementById(id)
+    .classList.add("active");
+
+    document.querySelectorAll(".nav-item")
+    .forEach(n=>n.classList.remove("active"));
+
+    el.classList.add("active");
+}
+
+/* =========================
+TYPE
+========================= */
+
+function changeType(){
+
+    const type =
+    document.getElementById("ftype").value;
+
+    if(type === "text"){
+
+        text-area.style.display = "block";
+        file-area.style.display = "none";
+
+    }else{
+
+        text-area.style.display = "none";
+        file-area.style.display = "block";
+    }
+}
+
+/* =========================
+SAVE FILE
+========================= */
+
+function saveFile(){
+
+    const name = fname.value;
+    const type = ftype.value;
+    const pass = fpassword.value;
+
+    let users =
+    JSON.parse(localStorage.getItem("vault_users"));
+
+    if(type === "text"){
+
+        users[currentUser].files.push({
+
+            name:name,
+
+            type:type,
+
+            password:pass,
+
+            content:fcontent.value,
+
+            favorite:false
+        });
+
+        localStorage.setItem(
+            "vault_users",
+            JSON.stringify(users)
+        );
+
+        notify("Metin kaydedildi");
+
+        addXP(10);
+
+        loadFiles();
+
+    }else{
+
+        const file =
+        document.getElementById("real-file")
+        .files[0];
+
+        if(!file){
+
+            alert("Dosya seç");
+
+            return;
         }
 
-        function loadFiles() {
-            const grid = document.getElementById('file-grid');
-            const empty = document.getElementById('no-files');
-            grid.innerHTML = "";
-            
-            let users = JSON.parse(localStorage.getItem('vault_users'));
-            const myFiles = users[currentU].files;
+        const reader =
+        new FileReader();
 
-            if(myFiles.length === 0) {
-                empty.style.display = 'block';
-            } else {
-                empty.style.display = 'none';
-                myFiles.forEach(f => {
-                    const icon = f.type.includes('Kod') ? 'fa-code' : (f.type.includes('PDF') ? 'fa-file-pdf' : 'fa-file-lines');
-                    grid.innerHTML += `<div class="item-box"><i class="fas ${icon}"></i><b>${f.name}</b><br><span class="type-badge">${f.type}</span></div>`;
-                });
-            }
+        reader.onload = function(e){
+
+            users[currentUser].files.push({
+
+                name:name,
+
+                type:type,
+
+                password:pass,
+
+                filename:file.name,
+
+                data:e.target.result,
+
+                favorite:false
+            });
+
+            localStorage.setItem(
+                "vault_users",
+                JSON.stringify(users)
+            );
+
+            notify("Dosya yüklendi");
+
+            addXP(20);
+
+            loadFiles();
         }
 
-        function openPayment(title) { document.getElementById('pay-title').innerText = title; document.getElementById('payment-modal').style.display='flex'; }
-        function closePayment() { document.getElementById('payment-modal').style.display='none'; }
-        function finishPay() { alert("Ödeme Başarılı! Paketiniz aktif edildi."); closePayment(); }
-        function sendSup() { 
-            if(!document.getElementById('smsg').value) return;
-            document.getElementById('sup-form').style.display='none'; 
-            document.getElementById('sup-ok').style.display='block'; 
+        reader.readAsDataURL(file);
+    }
+}
+
+/* =========================
+LOAD FILES
+========================= */
+
+function loadFiles(){
+
+    const grid =
+    document.getElementById("file-grid");
+
+    grid.innerHTML = "";
+
+    let users =
+    JSON.parse(localStorage.getItem("vault_users"));
+
+    const files =
+    users[currentUser].files;
+
+    files.forEach((file,index)=>{
+
+        grid.innerHTML += `
+
+        <div class="item-box file-box">
+
+            <i class="fas fa-lock"></i>
+
+            <h3>${file.name}</h3>
+
+            <div class="type">
+                ${file.type}
+            </div>
+
+            <br><br>
+
+            <button class="auth-btn"
+            onclick="openFile(${index})">
+
+            Aç
+
+            </button>
+
+            <button class="auth-btn"
+            onclick="deleteFile(${index})">
+
+            Sil
+
+            </button>
+
+            <button class="auth-btn"
+            onclick="favoriteFile(${index})">
+
+            Favori
+
+            </button>
+
+            <button class="auth-btn"
+            onclick="shareFile(${index})">
+
+            Paylaş
+
+            </button>
+
+            <button class="auth-btn"
+            onclick="editFile(${index})">
+
+            Düzenle
+
+            </button>
+
+        </div>
+
+        `;
+    });
+}
+
+/* =========================
+OPEN FILE
+========================= */
+
+function openFile(index){
+
+    let users =
+    JSON.parse(localStorage.getItem("vault_users"));
+
+    const file =
+    users[currentUser].files[index];
+
+    const pass =
+    prompt("Dosya şifresi");
+
+    if(pass !== file.password){
+
+        alert("Şifre yanlış");
+
+        return;
+    }
+
+    if(file.type === "text"){
+
+        alert(file.content);
+
+    }else{
+
+        const a =
+        document.createElement("a");
+
+        a.href = file.data;
+
+        a.download = file.filename;
+
+        a.click();
+    }
+}
+
+/* =========================
+DELETE FILE
+========================= */
+
+function deleteFile(index){
+
+    let users =
+    JSON.parse(localStorage.getItem("vault_users"));
+
+    users[currentUser].files
+    .splice(index,1);
+
+    localStorage.setItem(
+        "vault_users",
+        JSON.stringify(users)
+    );
+
+    notify("Dosya silindi");
+
+    loadFiles();
+}
+
+/* =========================
+FAVORITE
+========================= */
+
+function favoriteFile(index){
+
+    let users =
+    JSON.parse(localStorage.getItem("vault_users"));
+
+    users[currentUser]
+    .files[index]
+    .favorite = true;
+
+    localStorage.setItem(
+        "vault_users",
+        JSON.stringify(users)
+    );
+
+    notify("Favorilere eklendi");
+}
+
+/* =========================
+SEARCH
+========================= */
+
+function searchFiles(){
+
+    const value =
+    search.value.toLowerCase();
+
+    document.querySelectorAll(".file-box")
+    .forEach(box=>{
+
+        if(
+            box.innerText.toLowerCase()
+            .includes(value)
+        ){
+
+            box.style.display = "block";
+
+        }else{
+
+            box.style.display = "none";
         }
-    </script>
+    });
+}
+
+/* =========================
+PREMIUM
+========================= */
+
+function buyPremium(name){
+
+    let users =
+    JSON.parse(localStorage.getItem("vault_users"));
+
+    users[currentUser].premium = name;
+
+    localStorage.setItem(
+        "vault_users",
+        JSON.stringify(users)
+    );
+
+    updatePremium();
+
+    notify(name + " aktif edildi");
+}
+
+function updatePremium(){
+
+    let users =
+    JSON.parse(localStorage.getItem("vault_users"));
+
+    premium-text.innerText =
+    "Paket: " +
+    users[currentUser].premium;
+}
+
+/* =========================
+NOTIFY
+========================= */
+
+function notify(text){
+
+    const div =
+    document.createElement("div");
+
+    div.innerText = text;
+
+    div.style.position = "fixed";
+    div.style.right = "20px";
+    div.style.top = "20px";
+    div.style.background = "#10b981";
+    div.style.color = "white";
+    div.style.padding = "15px";
+    div.style.borderRadius = "10px";
+    div.style.zIndex = "9999";
+
+    document.body.appendChild(div);
+
+    setTimeout(()=>{
+        div.remove();
+    },3000);
+}
+
+/* =========================
+DARK MODE
+========================= */
+
+function toggleDarkMode(){
+
+    document.body.classList.toggle(
+        "dark-mode"
+    );
+}
+
+/* =========================
+XP
+========================= */
+
+function addXP(amount){
+
+    let users =
+    JSON.parse(localStorage.getItem("vault_users"));
+
+    users[currentUser]
+    .profile.xp += amount;
+
+    if(
+        users[currentUser]
+        .profile.xp >= 100
+    ){
+
+        users[currentUser]
+        .profile.level++;
+
+        users[currentUser]
+        .profile.xp = 0;
+
+        notify("Level atladın");
+    }
+
+    localStorage.setItem(
+        "vault_users",
+        JSON.stringify(users)
+    );
+}
+
+/* =========================
+EDIT
+========================= */
+
+function editFile(index){
+
+    let users =
+    JSON.parse(localStorage.getItem("vault_users"));
+
+    const file =
+    users[currentUser].files[index];
+
+    if(file.type !== "text"){
+        return;
+    }
+
+    const newText =
+    prompt(
+        "Yeni içerik",
+        file.content
+    );
+
+    if(newText !== null){
+
+        file.content = newText;
+
+        localStorage.setItem(
+            "vault_users",
+            JSON.stringify(users)
+        );
+
+        notify("Güncellendi");
+    }
+}
+
+/* =========================
+SHARE
+========================= */
+
+function shareFile(index){
+
+    const code =
+    Math.random()
+    .toString(36)
+    .substring(2,10);
+
+    alert(
+        "Paylaşım kodu: " + code
+    );
+}
+
+/* =========================
+FOLDER
+========================= */
+
+function createFolder(){
+
+    const folder =
+    prompt("Klasör adı");
+
+    if(!folder) return;
+
+    let users =
+    JSON.parse(localStorage.getItem("vault_users"));
+
+    users[currentUser]
+    .folders.push(folder);
+
+    localStorage.setItem(
+        "vault_users",
+        JSON.stringify(users)
+    );
+
+    notify("Klasör oluşturuldu");
+}
+
+/* =========================
+AUTO LOGOUT
+========================= */
+
+let timeout;
+
+function resetTimer(){
+
+    clearTimeout(timeout);
+
+    timeout = setTimeout(()=>{
+
+        alert("Oturum süresi doldu");
+
+        logout();
+
+    },300000);
+}
+
+window.onload = resetTimer;
+
+document.onmousemove = resetTimer;
+document.onkeypress = resetTimer;
+
+/* =========================
+LOGOUT
+========================= */
+
+function logout(){
+
+    localStorage.removeItem(
+        "active_user"
+    );
+
+    location.reload();
+}
+
+</script>
+
 </body>
     </html>
-    
