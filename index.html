@@ -310,9 +310,6 @@
         const myChart = echarts.init(chartDom);
         let option;
 
-        // Yerel dosyadan çalıştırırken CORS hatası almamak için basit renkler/shading kullanıyoruz.
-        // Dünyanın noktalarını çizeceğiz (Point Cloud tarzı)
-        
         // Rastgele ülke koordinatları (Saldırı Kaynakları ve Hedefleri)
         const countries = [
             { name: "Türkiye", coords: [35.2433, 38.9637] },
@@ -332,24 +329,25 @@
         option = {
             backgroundColor: 'transparent',
             globe: {
-                baseTexture: '', // Varsayılan karanlık dünya
+                // Gerçek dünya görünümü için doku (texture) eklendi
+                baseTexture: 'https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/examples/data-gl/asset/earth.jpg',
+                heightTexture: 'https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/examples/data-gl/asset/bathymetry_bw_composite_4k.jpg',
                 globeRadius: 50,
-                shading: 'color',
+                shading: 'realistic',
+                realisticMaterial: {
+                    roughness: 0.6,
+                    metalness: 0.1
+                },
                 environment: 'none',
                 light: {
-                    main: { intensity: 2, shadow: true },
-                    ambient: { intensity: 1 }
+                    main: { intensity: 1.5, shadow: true },
+                    ambient: { intensity: 1.2 }
                 },
                 viewControl: {
                     autoRotate: true,
                     autoRotateSpeed: 3,
                     targetCoord: [35.2433, 38.9637], // Başlangıçta Türkiye'ye bakar
-                    distance: 120 // Kameranın uzaklığı
-                },
-                itemStyle: {
-                    color: 'rgba(5, 15, 30, 0.9)', // Dünyanın rengi
-                    borderColor: 'rgba(0, 255, 65, 0.4)',
-                    borderWidth: 0.5
+                    distance: 170 // Kameranın uzaklığını artırarak dünyayı küçülttük (Eskisi 120)
                 }
             },
             series: [
@@ -395,7 +393,6 @@
 
         // --- 2. CANLI SALDIRI (LAZER) ÜRETİCİSİ ---
         function generateAttack() {
-            // Rastgele iki ülke seç
             const srcIndex = Math.floor(Math.random() * countries.length);
             let dstIndex = Math.floor(Math.random() * countries.length);
             while (dstIndex === srcIndex) {
@@ -444,40 +441,31 @@
             
             const logLine = document.createElement('div');
             
-            // Eğer Türkiye savunuluyorsa yeşil (başarı) yap
             if (target === "Türkiye") {
                 logLine.className = 'log-line success';
                 logLine.innerHTML = `[✓] S.İ.B ENGELLEDİ! Tür: ${attackType} | ${source} (${ip1}) -> Türkiye <br><span style="color:#666; font-size:0.6rem;">Yuşa Çiloğlan & Ç. Ekibi Savunma Hattı Aktif</span>`;
                 totalBlocked++;
             } else {
-                // Diğer ülkeler arası saldırılar (Kırmızı)
                 logLine.className = 'log-line danger';
                 logLine.innerHTML = `[!] SALDIRI TESPİTİ: ${attackType} | ${source} (${ip1}) -> ${target} (${ip2})`;
             }
 
             logBox.prepend(logLine);
 
-            // Log ekranı taşmasın diye eskileri sil (Max 15 satır)
             if (logBox.children.length > 15) {
                 logBox.removeChild(logBox.lastChild);
             }
         }
 
-        // İstatistikleri güncelle (Saniyede bir)
         setInterval(() => {
-            currentAttacks = Math.floor(Math.random() * 45) + 10; // 10 ile 55 arası
+            currentAttacks = Math.floor(Math.random() * 45) + 10;
             attacksCountEl.innerText = currentAttacks;
-            
-            // Engellenen saldırıları artır
             totalBlocked += Math.floor(Math.random() * 5);
-            // Sayıyı noktalı formata çevir (Örn: 8.450.123)
             blockedCountEl.innerText = totalBlocked.toLocaleString('tr-TR');
-
         }, 1000);
 
-        // Her X milisaniyede bir yeni saldırı başlat
-        setInterval(generateAttack, 300); // Ne kadar düşükse o kadar çok lazer atar
+        setInterval(generateAttack, 300);
 
     </script>
 </body>
-        </html>
+    </html>
