@@ -10,129 +10,83 @@ body{
 margin:0;
 font-family:Arial;
 background:#0b1220;
-color:#e5e7eb;
-}
-
-/* LOGIN */
-#gate{
-position:fixed;
-inset:0;
-background:#0b1220;
+color:white;
 display:flex;
-justify-content:center;
-align-items:center;
 }
 
-.box{
-width:400px;
-background:#111827;
-padding:20px;
-border-radius:12px;
-border:1px solid #1f2937;
-}
-
-input{
-width:100%;
-padding:10px;
-margin-top:10px;
-border-radius:8px;
-border:1px solid #374151;
-background:#0f172a;
-color:white;
-}
-
-button{
-width:100%;
-padding:10px;
-margin-top:10px;
-border:none;
-border-radius:8px;
-background:#2563eb;
-color:white;
-cursor:pointer;
-}
-
-/* LAYOUT */
-.container{
-display:none;
-height:100vh;
-}
-
+/* sidebar */
 .sidebar{
-width:220px;
+width:240px;
 background:#0f172a;
+height:100vh;
 padding:15px;
 border-right:1px solid #1f2937;
 }
 
+.menu{
+padding:10px;
+margin-top:10px;
+background:#111827;
+border-radius:10px;
+cursor:pointer;
+}
+
+.menu:hover{
+background:#1f2937;
+}
+
+/* main */
 .main{
 flex:1;
 padding:20px;
 }
 
-.flex{display:flex}
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+gap:10px;
+}
 
-/* TAB */
-.page{display:none}
-.page.active{display:block}
-
-.item{
+.card{
 background:#111827;
 padding:15px;
 border-radius:10px;
-margin-top:10px;
 border:1px solid #1f2937;
 cursor:pointer;
 }
 
-h2{color:#60a5fa}
-.small{font-size:13px;color:#9ca3af}
-
-/* TOP WARNING */
-.warn{
-font-size:13px;
-padding:10px;
+.card:hover{
 background:#1f2937;
-border-left:4px solid #ef4444;
-margin-bottom:15px;
+}
+
+.viewer{
+margin-top:20px;
+background:#0f172a;
+padding:20px;
+border-radius:10px;
+border:1px solid #1f2937;
+display:none;
+}
+
+h2{color:#60a5fa}
+
+.warn{
+font-size:12px;
+color:#9ca3af;
+margin-bottom:10px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN / GATE -->
-<div id="gate">
-<div class="box">
-
-<h2>Siber Akademi</h2>
-
-<div class="warn">
-Bu platform sadece <b>yasal yazılım eğitimi</b> ve <b>siber güvenlik farkındalığı</b> içindir.  
-İzinsiz erişim, saldırı veya kötüye kullanım içerikleri öğretilmez.
-</div>
-
-<input id="u" placeholder="kullanıcı">
-<input id="p" type="password" placeholder="şifre">
-
-<button onclick="enter()">Giriş</button>
-
-</div>
-</div>
-
-<!-- APP -->
-<div class="container flex" id="app">
-
 <!-- SIDEBAR -->
 <div class="sidebar">
 
 <h3>Siber Akademi</h3>
 
-<div class="item" onclick="show('home')">📚 Dersler</div>
-<div class="item" onclick="show('python')">🐍 Python</div>
-<div class="item" onclick="show('web')">🌐 Web</div>
-<div class="item" onclick="show('linux')">🐧 Kali Linux</div>
-<div class="item" onclick="show('about')">⚖️ Hakkımızda</div>
+<div class="menu" onclick="showHome()">📚 Dersler</div>
+<div class="menu" onclick="showAbout()">⚖️ Hakkımızda</div>
 
 </div>
 
@@ -140,79 +94,91 @@ Bu platform sadece <b>yasal yazılım eğitimi</b> ve <b>siber güvenlik farkın
 <div class="main">
 
 <!-- HOME -->
-<div class="page active" id="home">
+<div id="home">
 
-<h2>Hoşgeldin</h2>
+<h2>📚 PDF Dersler</h2>
 
-<p class="small">
-Bu sistem 3 ana eğitim içerir: Python, Web ve Siber Güvenlik (Kali Linux).  
-Tüm içerikler sadece <b>yasal eğitim</b> amaçlıdır.
-</p>
+<div class="warn">
+Tüm içerikler yasal yazılım ve siber güvenlik eğitimi içindir.
+</div>
+
+<div class="grid">
+
+<div class="card" onclick="openPDF(1,'Python Değişkenler')">
+📄 PDF 1 - Python Değişkenler
+</div>
+
+<div class="card" onclick="openPDF(2,'If / Else')">
+📄 PDF 2 - If / Else
+</div>
+
+<div class="card" onclick="openPDF(3,'Döngüler')">
+📄 PDF 3 - Döngüler
+</div>
+
+<div class="card" onclick="openPDF(4,'HTML Temel')">
+📄 PDF 4 - HTML Temel
+</div>
+
+<div class="card" onclick="openPDF(5,'CSS Giriş')">
+📄 PDF 5 - CSS Giriş
+</div>
+
+<div class="card" onclick="openPDF(6,'Kali Linux')">
+📄 PDF 6 - Kali Linux
+</div>
 
 </div>
 
-<!-- PYTHON -->
-<div class="page" id="python">
-<h2>🐍 Python Dersleri</h2>
-
-<div class="item">Değişkenler</div>
-<div class="item">If / Else</div>
-<div class="item">Döngüler</div>
-<div class="item">Fonksiyonlar</div>
-<div class="item">Mini Projeler</div>
-
+<div class="viewer" id="viewer">
+<h3 id="title"></h3>
+<p id="content"></p>
 </div>
-
-<!-- WEB -->
-<div class="page" id="web">
-<h2>🌐 Web Geliştirme</h2>
-
-<div class="item">HTML Temel</div>
-<div class="item">CSS Tasarım</div>
-<div class="item">JavaScript</div>
-<div class="item">DOM</div>
-<div class="item">Mini Web Projeleri</div>
-
-</div>
-
-<!-- LINUX -->
-<div class="page" id="linux">
-<h2>🐧 Kali Linux / Siber Güvenlik</h2>
-
-<div class="item">Linux Temel Komutlar</div>
-<div class="item">Network Mantığı</div>
-<div class="item">Şifreleme Temelleri</div>
-<div class="item">CTF Görevleri</div>
-<div class="item">Savunma Teknikleri</div>
 
 </div>
 
 <!-- ABOUT -->
-<div class="page" id="about">
+<div id="about" style="display:none">
 
 <h2>⚖️ Hakkımızda</h2>
 
-<p class="small">
-Bu site <b>Yuşa Çiloğlan</b> ve ekibi tarafından geliştirilmiştir.  
-Amacı tamamen <b>yasal yollarla yazılım eğitimi</b>, kodlama öğretimi ve siber güvenlik farkındalığı sağlamaktır.  
-Herhangi bir yasa dışı faaliyet desteklenmez veya öğretilmez.
+<p>
+Bu platform <b>Yuşa Çiloğlan</b> ve ekibi tarafından geliştirilmiştir.  
+Amacı sadece yasal yazılım eğitimi ve siber güvenlik farkındalığı sağlamaktır.
 </p>
 
 </div>
 
 </div>
-</div>
 
 <script>
 
-function enter(){
-document.getElementById("gate").style.display="none"
-document.getElementById("app").style.display="flex"
+function openPDF(no,title){
+
+viewer.style.display="block"
+titleEl.innerText = "PDF " + no + " - " + title
+
+let data = {
+1:"Python değişkenler veri saklamak için kullanılır.",
+2:"If/else koşul kontrol sistemidir.",
+3:"Döngüler tekrar eden işlemler içindir.",
+4:"HTML web sayfasının iskeletidir.",
+5:"CSS tasarım için kullanılır.",
+6:"Kali Linux güvenlik ve test ortamıdır."
 }
 
-function show(id){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
-document.getElementById(id).classList.add("active")
+contentEl.innerText = data[no]
+
+}
+
+function showHome(){
+home.style.display="block"
+about.style.display="none"
+}
+
+function showAbout(){
+home.style.display="none"
+about.style.display="block"
 }
 
 </script>
