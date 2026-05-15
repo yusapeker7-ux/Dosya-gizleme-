@@ -3,156 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Siber Kasa Vercel Vault</title>
+<title>LGS Puan Hesaplama</title>
 
 <style>
-body{margin:0;font-family:Arial;display:flex;background:#eef2ff}
+body{
+margin:0;
+font-family:Arial;
+background:#eef2ff;
+}
 
-.sidebar{width:220px;background:white;height:100vh;padding:15px}
-.main{flex:1;padding:20px}
+.container{
+max-width:700px;
+margin:40px auto;
+background:white;
+border-radius:15px;
+overflow:hidden;
+box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
 
-.page{display:none}
-.page.active{display:block}
+/* TAB BAR */
+.tabs{
+display:flex;
+background:#2563eb;
+}
 
-input,textarea,select{
-width:100%;padding:10px;margin-top:8px;border-radius:10px;border:1px solid #ccc}
+.tab{
+flex:1;
+padding:15px;
+text-align:center;
+color:white;
+cursor:pointer;
+font-weight:bold;
+}
+
+.tab.active{
+background:#1d4ed8;
+}
+
+/* CONTENT */
+.content{
+padding:20px;
+display:none;
+}
+
+.content.active{
+display:block;
+}
+
+/* INPUT */
+input{
+width:100%;
+padding:10px;
+margin-top:8px;
+border-radius:10px;
+border:1px solid #ccc;
+}
 
 button{
-width:100%;padding:10px;margin-top:10px;
-background:#2563eb;color:white;border:none;border-radius:10px;cursor:pointer}
+width:100%;
+padding:10px;
+margin-top:15px;
+border:none;
+background:#2563eb;
+color:white;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
 
-.card{background:white;padding:15px;border-radius:15px;margin-top:10px}
+.result{
+margin-top:15px;
+font-size:18px;
+font-weight:bold;
+color:#16a34a;
+text-align:center;
+}
 
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-
-.item{background:white;padding:10px;border-radius:10px;text-align:center}
-
-.modal{
-position:fixed;inset:0;background:rgba(0,0,0,.6);
-display:none;justify-content:center;align-items:center}
-
-.box{background:white;padding:20px;width:320px;border-radius:15px}
-
-.dark{background:#0f172a;color:white}
-.dark .card{background:#1e293b;color:white}
+.small{
+font-size:13px;
+color:#64748b;
+text-align:center;
+margin-top:10px;
+}
 </style>
 </head>
 
 <body>
 
-<!-- AUTH -->
-<div id="auth" class="modal" style="display:flex">
-<div class="box">
+<div class="container">
 
-<h2>Giriş / Kayıt</h2>
-
-<input id="u" placeholder="kullanıcı">
-<input id="p" type="password" placeholder="şifre">
-
-<button onclick="register()">Kayıt</button>
-<button onclick="login()">Giriş</button>
-
-<p id="msg"></p>
-
-</div>
+<!-- TAB BUTTONS -->
+<div class="tabs">
+<div class="tab active" onclick="openTab(0)">LGS Hesaplama</div>
+<div class="tab" onclick="openTab(1)">Hakkımızda</div>
 </div>
 
-<!-- PAYMENT -->
-<div id="pay" class="modal">
-<div class="box">
+<!-- LGS -->
+<div class="content active">
 
-<h3 id="pt">Ödeme</h3>
+<h2>LGS Net & Puan Hesaplama</h2>
 
-<input id="c1" placeholder="Kart sahibi">
-<input id="c2" placeholder="Kart no">
-<input id="c3" placeholder="AA/YY">
-<input id="c4" placeholder="CVV">
+<input id="d1" type="number" placeholder="Türkçe Doğru">
+<input id="y1" type="number" placeholder="Türkçe Yanlış">
 
-<button onclick="buy()">Onayla</button>
-<button onclick="pay.style.display='none'">İptal</button>
+<input id="d2" type="number" placeholder="Matematik Doğru">
+<input id="y2" type="number" placeholder="Matematik Yanlış">
 
-</div>
-</div>
+<input id="d3" type="number" placeholder="Fen Doğru">
+<input id="y3" type="number" placeholder="Fen Yanlış">
 
-<!-- SIDEBAR -->
-<div class="sidebar">
+<input id="d4" type="number" placeholder="İnkılap Doğru">
+<input id="y4" type="number" placeholder="İnkılap Yanlış">
 
-<button onclick="show('home')">Ana</button>
-<button onclick="show('create')">Oluştur</button>
-<button onclick="show('files')">Dosyalar</button>
-<button onclick="show('market')">Market</button>
-<button onclick="toggle()">Dark</button>
-<button onclick="logout()">Çıkış</button>
+<input id="d5" type="number" placeholder="Din Doğru">
+<input id="y5" type="number" placeholder="Din Yanlış">
+
+<input id="d6" type="number" placeholder="İngilizce Doğru">
+<input id="y6" type="number" placeholder="İngilizce Yanlış">
+
+<button onclick="calc()">Hesapla</button>
+
+<div class="result" id="res"></div>
+<div class="small" id="det"></div>
 
 </div>
 
-<!-- MAIN -->
-<div class="main">
+<!-- ABOUT -->
+<div class="content">
 
-<div id="home" class="page active">
-<h2>Panel</h2>
-<div class="card">
-Plan: <span id="plan">FREE</span>
-</div>
-</div>
+<h2>Hakkımızda</h2>
 
-<!-- CREATE -->
-<div id="create" class="page">
+<p style="line-height:1.6;">
+Bu LGS hesaplama aracı öğrencilerin net ve puan hesaplamasını kolaylaştırmak için hazırlanmıştır.
+</p>
 
-<h2>Dosya Oluştur</h2>
-
-<input id="fname" placeholder="dosya adı">
-
-<select id="type" onchange="typeChange()">
-<option value="text">Metin</option>
-<option value="file">Dosya</option>
-<option value="code">Kod</option>
-</select>
-
-<textarea id="ftext" placeholder="içerik" style="height:120px"></textarea>
-
-<input type="file" id="fupload" style="display:none;margin-top:10px">
-
-<input id="fpass" placeholder="şifre">
-
-<button onclick="save()">Kaydet</button>
-
-</div>
-
-<!-- FILES -->
-<div id="files" class="page">
-
-<h2>Dosyalar</h2>
-
-<input id="search" placeholder="ara" onkeyup="search()">
-
-<div id="list"></div>
-
-</div>
-
-<!-- MARKET -->
-<div id="market" class="page">
-
-<h2>Market</h2>
-
-<div class="grid">
-
-<div class="item">
-Süper 15$
-<button onclick="openPay('Süper')">Al</button>
-</div>
-
-<div class="item">
-Pro 40$
-<button onclick="openPay('Pro')">Al</button>
-</div>
-
-<div class="item">
-Elite 100$
-<button onclick="openPay('Elite')">Al</button>
-</div>
-
-</div>
+<p class="small">
+Geliştirici: Yuşa Çiloğlan
+</p>
 
 </div>
 
@@ -160,185 +147,54 @@ Elite 100$
 
 <script>
 
-let user=""
-let selected=""
+/* TAB SYSTEM */
+function openTab(i){
 
-/* DB */
-function db(){
-return JSON.parse(localStorage.getItem("db")||"{}")
-}
-function saveDB(d){
-localStorage.setItem("db",JSON.stringify(d))
-}
+let tabs = document.querySelectorAll(".tab")
+let contents = document.querySelectorAll(".content")
 
-/* REGISTER */
-function register(){
-let d=db()
-if(d[u.value]) return msg("var")
+tabs.forEach(t=>t.classList.remove("active"))
+contents.forEach(c=>c.classList.remove("active"))
 
-d[u.value]={pass:p.value,files:[],plan:"FREE"}
-saveDB(d)
-msg("ok")
-}
-
-/* LOGIN */
-function login(){
-let d=db()
-
-if(d[u.value]&&d[u.value].pass==p.value){
-user=u.value
-localStorage.setItem("u",user)
-auth.style.display="none"
-load()
-}else msg("hata")
-}
-
-/* LOGOUT */
-function logout(){
-localStorage.removeItem("u")
-location.reload()
-}
-
-/* PAGE */
-function show(x){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
-document.getElementById(x).classList.add("active")
-}
-
-/* TYPE SWITCH */
-function typeChange(){
-if(type.value=="file"){
-ftext.style.display="none"
-fupload.style.display="block"
-}else{
-ftext.style.display="block"
-fupload.style.display="none"
-}
-}
-
-/* SAVE */
-function save(){
-
-let d=db()
-
-function add(content){
-
-d[user].files.push({
-name:fname.value,
-type:type.value,
-data:content,
-pass:fpass.value
-})
-
-saveDB(d)
-load()
-}
-
-if(type.value=="file"){
-
-let r=new FileReader()
-r.onload=function(e){
-add(e.target.result)
-}
-r.readAsDataURL(fupload.files[0])
-
-}else{
-add(ftext.value)
-}
+tabs[i].classList.add("active")
+contents[i].classList.add("active")
 
 }
 
-/* LOAD */
-function load(){
+/* NET HESAP */
+function net(d,y){
+return (Number(d)||0) - (Number(y)||0)/4
+}
 
-let d=db()
+function calc(){
 
-plan.innerText=d[user].plan
+let totalNet =
+net(d1.value,y1.value)+
+net(d2.value,y2.value)+
+net(d3.value,y3.value)+
+net(d4.value,y4.value)+
+net(d5.value,y5.value)+
+net(d6.value,y6.value)
 
-list.innerHTML=""
+/* LGS puan benzeri ölçek */
+let puan = 100 + totalNet * 8.5
 
-d[user].files.forEach((f,i)=>{
-list.innerHTML+=`
-<div class="card">
-<b>${f.name}</b>
-<button onclick="openF(${i})">Aç</button>
-</div>`
-})
+res.innerHTML =
+"LGS Puan: " + puan.toFixed(2)
+
+det.innerHTML =
+"Toplam Net: " + totalNet.toFixed(2)
+
+localStorage.setItem("lgs_last", puan)
 
 }
 
-/* OPEN FILE */
-function openF(i){
-
-let d=db()
-let f=d[user].files[i]
-
-let p=prompt("şifre")
-
-if(p!=f.pass){
-alert("yanlış")
-return
-}
-
-if(f.type=="file"){
-window.open(f.data)
-}else{
-alert(f.data)
-}
-
-}
-
-/* SEARCH */
-function search(){
-let v=search.value.toLowerCase()
-
-document.querySelectorAll(".card").forEach(c=>{
-c.style.display=c.innerText.toLowerCase().includes(v)?"block":"none"
-})
-}
-
-/* PAYMENT */
-function openPay(p){
-selected=p
-pay.style.display="flex"
-pt.innerText=p
-}
-
-function buy(){
-
-if(!c1.value||!c2.value||!c3.value||!c4.value){
-alert("eksik")
-return
-}
-
-let d=db()
-d[user].plan=selected
-saveDB(d)
-
-plan.innerText=selected
-pay.style.display="none"
-
-alert("satın alındı")
-}
-
-/* DARK */
-function toggle(){
-document.body.classList.toggle("dark")
-}
-
-/* AUTO LOGIN */
+/* LAST SCORE */
 window.onload=()=>{
-let u=localStorage.getItem("u")
-if(u){
-user=u
-auth.style.display="none"
-load()
+let last = localStorage.getItem("lgs_last")
+if(last){
+res.innerHTML = "Son LGS: " + Number(last).toFixed(2)
 }
-}
-
-/* MSG */
-function msg(t){
-document.getElementById("msg").innerText=t
 }
 
 </script>
