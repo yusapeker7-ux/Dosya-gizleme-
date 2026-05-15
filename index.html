@@ -1,360 +1,483 @@
-        .stat-box:hover {
-            border-color: var(--blue-glow);
-            box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
-            transform: translateY(-5px);
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.İ.B Küresel Tehdit İzleme Merkezi | Yuşa Çiloğlan</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ECharts & ECharts-GL -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2.0.9/dist/echarts-gl.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #00020a;
+            --panel-bg: rgba(5, 10, 20, 0.75);
+            --border-color: rgba(0, 255, 65, 0.3);
+            --accent-green: #00ff41;
+            --accent-red: #ff003c;
+            --accent-blue: #0ea5e9;
+            --text-main: #f8fafc;
         }
 
-        .stat-number {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 3rem;
-            color: var(--blue-glow);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden; /* Tam ekran harita */
+            height: 100vh;
+            width: 100vw;
+            background-image: 
+                radial-gradient(circle at center, transparent 0%, #000 100%),
+                linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        /* 3D Harita Konteyneri */
+        #globe-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Header Bar */
+        .header {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 60px;
+            background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, var(--panel-bg) 50%, rgba(0,0,0,0.9) 100%);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand i {
+            font-size: 2rem;
+            color: var(--accent-red);
+            text-shadow: 0 0 10px var(--accent-red);
+            animation: pulse-red 2s infinite;
+        }
+
+        .brand-text h1 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .brand-text p {
+            font-size: 0.7rem;
+            color: var(--accent-green);
+            letter-spacing: 1px;
+        }
+
+        /* Paneller */
+        .panel {
+            position: absolute;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 1rem;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            box-shadow: inset 0 0 15px rgba(0, 255, 65, 0.05);
+        }
+
+        .panel-title {
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        /* Sol Panel: Takım & İstatistikler */
+        .left-panel {
+            top: 80px;
+            left: 20px;
+            width: 320px;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Sağ Panel: Canlı Loglar */
+        .right-panel {
+            top: 80px;
+            right: 20px;
+            width: 380px;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Log Ekranı */
+        .log-container {
+            flex-grow: 1;
+            overflow-y: hidden;
+            position: relative;
+            font-size: 0.75rem;
+            color: #bbb;
+            line-height: 1.5;
+        }
+
+        .log-line {
+            margin-bottom: 0.4rem;
+            opacity: 0;
+            animation: fade-in 0.3s forwards;
+            border-left: 2px solid transparent;
+            padding-left: 5px;
+        }
+
+        .log-line.danger {
+            color: #ff4444;
+            border-left-color: #ff4444;
+        }
+        .log-line.warning {
+            color: #ffbb33;
+            border-left-color: #ffbb33;
+        }
+        .log-line.success {
+            color: var(--accent-green);
+            border-left-color: var(--accent-green);
+        }
+
+        @keyframes fade-in {
+            to { opacity: 1; }
+        }
+        @keyframes pulse-red {
+            0%, 100% { text-shadow: 0 0 10px var(--accent-red); opacity: 1; }
+            50% { text-shadow: 0 0 25px var(--accent-red); opacity: 0.7; }
+        }
+
+        /* Sayaçlar */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            color: var(--accent-green);
             font-weight: bold;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
+            text-shadow: 0 0 10px var(--accent-green);
+        }
+
+        .stat-value.red {
+            color: var(--accent-red);
+            text-shadow: 0 0 10px var(--accent-red);
         }
 
         .stat-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Performance / Skills Section */
-        .skills-section {
-            padding: 6rem 0;
-        }
-
-        .section-title {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 4rem;
-            color: #fff;
+            font-size: 0.65rem;
+            color: #888;
             text-transform: uppercase;
         }
 
-        .section-title span {
-            color: var(--blue-glow);
+        /* Ekip Bölümü */
+        .team-box {
+            background: rgba(255, 0, 60, 0.1);
+            border-left: 3px solid var(--accent-red);
+            padding: 1rem;
+            margin-top: auto;
         }
 
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 3rem;
-        }
-
-        .skill-category {
-            background: rgba(15, 23, 42, 0.6);
-            border-left: 3px solid var(--blue-border);
-            padding: 2rem;
-        }
-
-        .skill-category h3 {
-            font-family: 'Share Tech Mono', monospace;
-            margin-bottom: 1.5rem;
-            color: var(--sib-red);
-            font-size: 1.2rem;
-            letter-spacing: 1px;
-        }
-
-        .skill-item {
-            margin-bottom: 1.5rem;
-        }
-
-        .skill-info {
-            display: flex;
-            justify-content: space-between;
+        .team-box h3 {
+            color: var(--accent-red);
+            font-size: 1rem;
             margin-bottom: 0.5rem;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.9rem;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
+        .team-box p {
+            font-size: 0.75rem;
+            color: #ccc;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--blue-border), var(--blue-glow));
-            width: 0; /* JS ile doldurulacak */
-            border-radius: 4px;
-            transition: width 1.5s cubic-bezier(0.1, 0.5, 0.2, 1);
-            position: relative;
+        .blink {
+            animation: blinker 1s linear infinite;
+            color: var(--accent-red);
+            font-weight: bold;
         }
 
-        /* Scanline efekti ilerleme çubuğunda */
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: scan 2s infinite;
+        @keyframes blinker {
+            50% { opacity: 0; }
         }
 
-        @keyframes scan {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid rgba(14, 165, 233, 0.2);
-            padding: 2rem 0;
-            text-align: center;
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--text-muted);
-            margin-top: 5rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .typewriter-container { font-size: 1.2rem; }
-            .skills-grid { grid-template-columns: 1fr; }
-        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div class="logo-container">
-                <i class="fa-solid fa-shield-halved logo-icon"></i>
-                <div>
-                    <span class="logo-text">S.İ.B</span>
-                    <span class="logo-sub">Siber İstihbarat Birimi</span>
-                </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="brand">
+            <i class="fa-solid fa-shield-virus"></i>
+            <div class="brand-text">
+                <h1>Siber İstihbarat Başkanlığı (S.İ.B)</h1>
+                <p>Küresel Tehdit İzleme & Savunma Merkezi</p>
             </div>
-            <ul class="nav-links">
-                <li><a href="#home">Terminal</a></li>
-                <li><a href="#analysis">Analiz</a></li>
-                <li><a href="#projects">Veritabanı</a></li>
-            </ul>
         </div>
-    </nav>
-
-    <main>
-        <!-- Hero Section -->
-        <section id="home" class="hero">
-            <div class="radar"></div>
-            <div class="container">
-                <h1>Yuşa Çiloğlan</h1>
-                <div class="typewriter-container">
-                    <span id="typewriter-text"></span><span class="blinking-cursor">_</span>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-number" data-target="15">0</div>
-                        <div class="stat-label">Yaşında Genç Yetenek</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-number" data-target="10">0</div>
-                        <div class="stat-label">Tamamlanan Proje</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-number" data-target="6">0</div>
-                        <div class="stat-label">Programlama Dili</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-number" data-target="100">0</div>
-                        <div class="stat-label">Güvenlik Tutkusu (%)</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Performance Analysis Section -->
-        <section id="analysis" class="skills-section container">
-            <h2 class="section-title">Program Performans <span>Analizleri</span></h2>
-            
-            <div class="skills-grid">
-                <!-- Kategori 1: Siber Güvenlik -->
-                <div class="skill-category">
-                    <h3><i class="fa-solid fa-skull-crossbones"></i> Ofansif & Defansif Araçlar</h3>
-                    
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Kali Linux (Core)</span><span>95%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" data-width="95%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Sızma Testi (Pentest)</span><span>95%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" data-width="95%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Nmap & Ağ Taraması</span><span>98%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" data-width="98%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Metasploit Framework</span><span>90%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" data-width="90%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Wireshark & Paket Analizi</span><span>85%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" data-width="85%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Kriptografi & Şifre Kırma</span><span>80%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" data-width="80%"></div></div>
-                    </div>
-                </div>
-
-                <!-- Kategori 2: Yazılım ve Yapay Zeka -->
-                <div class="skill-category">
-                    <h3><i class="fa-solid fa-microchip"></i> Yazılım & Yapay Zeka (AI)</h3>
-                    
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Python (Otomasyon & AI)</span><span>90%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" style="background: linear-gradient(90deg, #eab308, #facc15);" data-width="90%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Node.js & Backend</span><span>85%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" style="background: linear-gradient(90deg, #22c55e, #4ade80);" data-width="85%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Makine Öğrenmesi (ML)</span><span>75%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" style="background: linear-gradient(90deg, #8b5cf6, #a78bfa);" data-width="75%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>C++ & Sistem Programlama</span><span>70%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" data-width="70%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Bash Scripting</span><span>85%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" data-width="85%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info"><span>Veri Tabanı (SQL/NoSQL)</span><span>80%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" data-width="80%"></div></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>SİSTEM GÜVENDE. VERİLER KORUNUYOR.</p>
-            <p style="margin-top: 10px; font-size: 0.8rem; color: #475569;">&copy; 2026 S.İ.B | Yuşa Çiloğlan Portfolyo Veritabanı</p>
+        <div style="text-align: right;">
+            <p style="color: var(--accent-blue); font-size: 0.8rem;">SİSTEM DURUMU: <span class="blink" style="color: var(--accent-green);">AKTİF</span></p>
+            <p style="font-size: 0.7rem; color: #666;">Yönetici: Yuşa Çiloğlan (ROOT)</p>
         </div>
-    </footer>
+    </header>
 
-    <!-- JavaScript Logic -->
-    <script>
-        // Daktilo (Typewriter) Efekti
-        const words = [
-            "Hafız",
-            "Yapay Zeka Geliştiricisi", 
-            "Siber Güvenlik Uzmanı",
-            "Etik Hacker"
-        ];
+    <!-- 3D Globe Container -->
+    <div id="globe-container"></div>
+
+    <!-- Left Panel: Stats & Team -->
+    <div class="panel left-panel">
+        <div class="panel-title"><i class="fa-solid fa-chart-radar"></i> Ağ İstatistikleri</div>
         
-        let wordIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        const typewriterElement = document.getElementById("typewriter-text");
+        <div class="stat-grid">
+            <div class="stat-item">
+                <div class="stat-value red" id="attacks-count">0</div>
+                <div class="stat-label">Saniyedeki Saldırı</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="blocked-count">0</div>
+                <div class="stat-label">Engellenen (Toplam)</div>
+            </div>
+            <div class="stat-item" style="grid-column: span 2;">
+                <div class="stat-value" style="color: var(--accent-blue);" id="risk-level">ORTA</div>
+                <div class="stat-label">Küresel Risk Seviyesi</div>
+            </div>
+        </div>
 
-        function typeEffect() {
-            const currentWord = words[wordIndex];
-            
-            if (isDeleting) {
-                typewriterElement.textContent = currentWord.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                typewriterElement.textContent = currentWord.substring(0, charIndex + 1);
-                charIndex++;
-            }
+        <div class="panel-title" style="margin-top: 1rem;"><i class="fa-solid fa-network-wired"></i> Hedef Bölgeler</div>
+        <ul style="list-style: none; font-size: 0.8rem; color: #ccc; display: flex; flex-direction: column; gap: 0.5rem;">
+            <li style="display: flex; justify-content: space-between;"><span>Amerika Birleşik Devletleri</span><span style="color: var(--accent-red);">%34</span></li>
+            <li style="display: flex; justify-content: space-between;"><span>Rusya Federasyonu</span><span style="color: var(--accent-red);">%21</span></li>
+            <li style="display: flex; justify-content: space-between;"><span>Çin Halk Cumhuriyeti</span><span style="color: var(--accent-red);">%18</span></li>
+            <li style="display: flex; justify-content: space-between;"><span>Almanya</span><span style="color: var(--accent-red);">%12</span></li>
+            <li style="display: flex; justify-content: space-between;"><span>Türkiye (Savunuluyor)</span><span style="color: var(--accent-green);">%15</span></li>
+        </ul>
 
-            let typeSpeed = isDeleting ? 50 : 100;
+        <!-- Ekip Kutusu -->
+        <div class="team-box">
+            <h3><i class="fa-solid fa-users-viewfinder"></i> YUŞA ÇİLOĞLAN VE Ç. EKİBİ</h3>
+            <p>Bu savunma hattı, S.İ.B komutası altında Yuşa Çiloğlan ve uzman Ç. Ekibi tarafından yönetilmektedir. Ülkemize yönelik tespit edilen tüm SQL Injection, DDoS ve Phishing saldırıları başarıyla <span class="blink">ENGELLENMİŞTİR.</span></p>
+        </div>
+    </div>
 
-            // Kelime bittiğinde
-            if (!isDeleting && charIndex === currentWord.length) {
-                typeSpeed = 2000; // Bekleme süresi
-                isDeleting = true;
-            } 
-            // Silme işlemi bittiğinde
-            else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                wordIndex = (wordIndex + 1) % words.length;
-                typeSpeed = 500;
-            }
+    <!-- Right Panel: Live Logs -->
+    <div class="panel right-panel">
+        <div class="panel-title"><i class="fa-solid fa-terminal"></i> Canlı Siber Tehdit Akışı</div>
+        <div class="log-container" id="log-box">
+            <!-- Logs will be generated here -->
+        </div>
+    </div>
 
-            setTimeout(typeEffect, typeSpeed);
-        }
+    <script>
+        // --- 1. HARİTA (ECHARTS-GL) KURULUMU ---
+        const chartDom = document.getElementById('globe-container');
+        const myChart = echarts.init(chartDom);
+        let option;
 
-        // Counter (Sayı) Animasyonu
-        function startCounters() {
-            const counters = document.querySelectorAll('.stat-number');
-            const speed = 200; // Ne kadar düşükse o kadar hızlı
+        // Yerel dosyadan çalıştırırken CORS hatası almamak için basit renkler/shading kullanıyoruz.
+        // Dünyanın noktalarını çizeceğiz (Point Cloud tarzı)
+        
+        // Rastgele ülke koordinatları (Saldırı Kaynakları ve Hedefleri)
+        const countries = [
+            { name: "Türkiye", coords: [35.2433, 38.9637] },
+            { name: "ABD", coords: [-95.7129, 37.0902] },
+            { name: "Rusya", coords: [105.3188, 61.5240] },
+            { name: "Çin", coords: [104.1954, 35.8617] },
+            { name: "Brezilya", coords: [-51.9253, -14.2350] },
+            { name: "Almanya", coords: [10.4515, 51.1657] },
+            { name: "Japonya", coords: [138.2529, 36.2048] },
+            { name: "İran", coords: [53.6880, 32.4279] },
+            { name: "İngiltere", coords: [-3.4359, 55.3781] },
+            { name: "Hindistan", coords: [78.9629, 20.5937] }
+        ];
 
-            counters.forEach(counter => {
-                const updateCount = () => {
-                    const target = +counter.getAttribute('data-target');
-                    const count = +counter.innerText.replace('+', '');
-                    const inc = target / speed;
+        let attackData = [];
 
-                    if (count < target) {
-                        counter.innerText = Math.ceil(count + inc);
-                        setTimeout(updateCount, 20);
-                    } else {
-                        counter.innerText = target + "+";
-                    }
-                };
-                updateCount();
-            });
-        }
-
-        // İlerleme Çubukları (Progress Bars) Animasyonu
-        function animateProgressBars() {
-            const progressFills = document.querySelectorAll('.progress-fill');
-            progressFills.forEach(bar => {
-                const width = bar.getAttribute('data-width');
-                bar.style.width = width;
-            });
-        }
-
-        // Intersection Observer (Ekrana girince animasyonları başlat)
-        const observerOptions = {
-            threshold: 0.1
+        option = {
+            backgroundColor: 'transparent',
+            globe: {
+                baseTexture: '', // Varsayılan karanlık dünya
+                globeRadius: 50,
+                shading: 'color',
+                environment: 'none',
+                light: {
+                    main: { intensity: 2, shadow: true },
+                    ambient: { intensity: 1 }
+                },
+                viewControl: {
+                    autoRotate: true,
+                    autoRotateSpeed: 3,
+                    targetCoord: [35.2433, 38.9637], // Başlangıçta Türkiye'ye bakar
+                    distance: 120 // Kameranın uzaklığı
+                },
+                itemStyle: {
+                    color: 'rgba(5, 15, 30, 0.9)', // Dünyanın rengi
+                    borderColor: 'rgba(0, 255, 65, 0.4)',
+                    borderWidth: 0.5
+                }
+            },
+            series: [
+                {
+                    type: 'lines3D',
+                    coordinateSystem: 'globe',
+                    effect: {
+                        show: true,
+                        period: 2,
+                        trailWidth: 3,
+                        trailLength: 0.5,
+                        trailOpacity: 1,
+                        trailColor: '#ff003c' // Kırmızı saldırı lazerleri
+                    },
+                    blendMode: 'lighter',
+                    lineStyle: {
+                        width: 1,
+                        color: 'rgba(255, 0, 60, 0.1)',
+                        opacity: 0.2
+                    },
+                    data: attackData
+                },
+                {
+                    type: 'scatter3D',
+                    coordinateSystem: 'globe',
+                    blendMode: 'lighter',
+                    symbolSize: 5,
+                    itemStyle: {
+                        color: '#0ea5e9',
+                        opacity: 1
+                    },
+                    data: countries.map(c => c.coords)
+                }
+            ]
         };
 
-        const analysisObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateProgressBars();
-                }
-            });
-        }, observerOptions);
+        myChart.setOption(option);
 
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    startCounters();
-                    statsObserver.disconnect(); // Bir kere çalışsın
-                }
-            });
-        }, observerOptions);
-
-        // Sayfa yüklendiğinde başlat
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(typeEffect, 1000);
-            
-            // Observerları başlat
-            const analysisSection = document.getElementById('analysis');
-            if (analysisSection) analysisObserver.observe(analysisSection);
-            
-            const statsGrid = document.querySelector('.stats-grid');
-            if (statsGrid) statsObserver.observe(statsGrid);
-
-            // Konsol mesajı
-            console.log("%c S.İ.B Veritabanına Erişim Sağlandı ", "color: #0ea5e9; background: #0f172a; font-size: 20px; border: 1px solid #0ea5e9;");
-            console.log("Kullanıcı: Yuşa Çiloğlan | Yetki: ROOT");
+        // Pencere yeniden boyutlandığında haritayı ölçekle
+        window.addEventListener('resize', function() {
+            myChart.resize();
         });
+
+        // --- 2. CANLI SALDIRI (LAZER) ÜRETİCİSİ ---
+        function generateAttack() {
+            // Rastgele iki ülke seç
+            const srcIndex = Math.floor(Math.random() * countries.length);
+            let dstIndex = Math.floor(Math.random() * countries.length);
+            while (dstIndex === srcIndex) {
+                dstIndex = Math.floor(Math.random() * countries.length);
+            }
+
+            const source = countries[srcIndex];
+            const target = countries[dstIndex];
+
+            // Çizgi Ekle
+            attackData.push({
+                coords: [source.coords, target.coords],
+                value: Math.random() * 100
+            });
+
+            // Ekranda çok fazla lazer birikmemesi için eskileri sil
+            if (attackData.length > 50) {
+                attackData.shift();
+            }
+
+            // Haritayı güncelle
+            myChart.setOption({
+                series: [{
+                    type: 'lines3D',
+                    data: attackData
+                }]
+            });
+
+            // Log Ekle
+            addLog(source.name, target.name);
+        }
+
+        // --- 3. CANLI LOG VE İSTATİSTİK SİSTEMİ ---
+        const attackTypes = ["DDoS (Volumetric)", "SQL Injection", "Cross-Site Scripting", "Brute Force", "Malware Payload", "Zero-Day Exploit", "Port Scan"];
+        let totalBlocked = 8450123;
+        let currentAttacks = 0;
+
+        const logBox = document.getElementById('log-box');
+        const attacksCountEl = document.getElementById('attacks-count');
+        const blockedCountEl = document.getElementById('blocked-count');
+
+        function addLog(source, target) {
+            const attackType = attackTypes[Math.floor(Math.random() * attackTypes.length)];
+            const ip1 = `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.x.x`;
+            const ip2 = `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.x.x`;
+            
+            const logLine = document.createElement('div');
+            
+            // Eğer Türkiye savunuluyorsa yeşil (başarı) yap
+            if (target === "Türkiye") {
+                logLine.className = 'log-line success';
+                logLine.innerHTML = `[✓] S.İ.B ENGELLEDİ! Tür: ${attackType} | ${source} (${ip1}) -> Türkiye <br><span style="color:#666; font-size:0.6rem;">Yuşa Çiloğlan & Ç. Ekibi Savunma Hattı Aktif</span>`;
+                totalBlocked++;
+            } else {
+                // Diğer ülkeler arası saldırılar (Kırmızı)
+                logLine.className = 'log-line danger';
+                logLine.innerHTML = `[!] SALDIRI TESPİTİ: ${attackType} | ${source} (${ip1}) -> ${target} (${ip2})`;
+            }
+
+            logBox.prepend(logLine);
+
+            // Log ekranı taşmasın diye eskileri sil (Max 15 satır)
+            if (logBox.children.length > 15) {
+                logBox.removeChild(logBox.lastChild);
+            }
+        }
+
+        // İstatistikleri güncelle (Saniyede bir)
+        setInterval(() => {
+            currentAttacks = Math.floor(Math.random() * 45) + 10; // 10 ile 55 arası
+            attacksCountEl.innerText = currentAttacks;
+            
+            // Engellenen saldırıları artır
+            totalBlocked += Math.floor(Math.random() * 5);
+            // Sayıyı noktalı formata çevir (Örn: 8.450.123)
+            blockedCountEl.innerText = totalBlocked.toLocaleString('tr-TR');
+
+        }, 1000);
+
+        // Her X milisaniyede bir yeni saldırı başlat
+        setInterval(generateAttack, 300); // Ne kadar düşükse o kadar çok lazer atar
+
     </script>
 </body>
-</html>
+        </html>
